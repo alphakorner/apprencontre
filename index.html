@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#050308" />
+<meta name="description" content="AURA — la rencontre nouvelle génération à Strasbourg." />
+<title>AURA · Rencontre nouvelle génération</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --rose:#FF4D6D;--coral:#FF8A5B;--violet:#7C3AED;--blue:#4EA8FF;--gold:#E8B04B;--green:#37D399;
+    --grad:linear-gradient(135deg,var(--rose),var(--coral));
+    --glow:0 0 34px rgba(255,77,109,.4);
+    --ink:#050308;--ink-2:#0C0912;--text:#F6F0F8;--muted:#9E90AA;
+    --surface:rgba(255,255,255,.06);--surface-2:rgba(255,255,255,.11);
+    --border:rgba(255,255,255,.10);--border-2:rgba(255,255,255,.2);
+    --glass:rgba(14,9,20,.5);--glass-brd:rgba(255,255,255,.13);
+    --shadow:0 24px 60px -18px rgba(0,0,0,.8);
+    --fd:"Bricolage Grotesque",system-ui,sans-serif;--fb:"Inter",system-ui,sans-serif;--fm:"Space Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{min-height:100%}
+  body{font-family:var(--fb);color:var(--text);background:var(--ink);min-height:100dvh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;transition:transform .12s,filter .2s,background .2s}
+  button:active{transform:scale(.95)}
+  input{font-family:inherit}
+  ::selection{background:var(--rose);color:#fff}
+  :focus-visible{outline:2px solid var(--rose);outline-offset:2px;border-radius:6px}
+  #bg{position:fixed;inset:0;z-index:0;width:100%;height:100%;filter:blur(16px) saturate(1.3);opacity:.85}
+  .wrap{position:relative;z-index:2;width:100%;max-width:560px;padding:0 22px;display:flex;flex-direction:column;align-items:center;flex:1}
+
+  .logo{display:flex;align-items:center;gap:11px;font-family:var(--fd);font-weight:800;font-size:34px;letter-spacing:1px;margin-top:min(11vh,90px)}
+  .logo b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .adot{width:34px;height:34px;border-radius:50%;background:var(--grad);box-shadow:var(--glow);position:relative;animation:breathe 3.4s ease-in-out infinite;flex:none}
+  .adot::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--rose);opacity:.5;animation:ripple 3.4s ease-out infinite}
+  @keyframes breathe{50%{transform:scale(.85)}}
+  @keyframes ripple{0%{transform:scale(.7);opacity:.55}100%{transform:scale(2.1);opacity:0}}
+
+  .hero{text-align:center;margin-top:34px}
+  .hero h1{font-family:var(--fd);font-weight:800;font-size:clamp(38px,10vw,62px);line-height:1.02;letter-spacing:-1.5px}
+  .hero h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:var(--muted);font-size:16px;margin-top:16px;line-height:1.55;max-width:400px;margin-inline:auto}
+  .badge{display:inline-flex;align-items:center;gap:7px;margin-top:22px;padding:8px 16px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:12.5px;font-weight:600;color:var(--muted);font-family:var(--fm)}
+  .badge .g{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:blink 1.6s infinite}
+  @keyframes blink{50%{opacity:.3}}
+
+  .cta{margin-top:30px;width:100%;max-width:340px;display:flex;flex-direction:column;gap:11px}
+  .cta-primary{padding:17px;border-radius:16px;font-weight:800;font-size:16px;background:var(--grad);color:#fff;box-shadow:var(--glow)}
+  .cta-line{padding:14px;border-radius:16px;font-weight:600;font-size:14px;border:1px solid var(--border-2);background:var(--surface);color:var(--text)}
+
+  .stats{display:flex;gap:12px;margin-top:32px;width:100%;max-width:400px}
+  .stat{flex:1;background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--glass-brd);border-radius:18px;padding:16px 12px;text-align:center}
+  .stat b{display:block;font-family:var(--fd);font-weight:800;font-size:24px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat span{font-family:var(--fm);font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+
+  .feats{margin-top:34px;width:100%;max-width:440px;display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .feat{background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--glass-brd);border-radius:16px;padding:16px}
+  .feat .fe{font-size:24px}
+  .feat h4{font-family:var(--fd);font-size:14.5px;margin:8px 0 4px}
+  .feat p{color:var(--muted);font-size:11.5px;line-height:1.45}
+
+  /* ===== BIO INGÉNIEUR (~3 cm) ===== */
+  .eng{margin-top:38px;width:100%;max-width:480px;min-height:118px;display:flex;gap:16px;align-items:center;background:linear-gradient(135deg,rgba(124,58,237,.14),rgba(255,77,109,.1));backdrop-filter:blur(18px);border:1px solid var(--glass-brd);border-radius:22px;padding:18px 20px;box-shadow:var(--shadow)}
+  .eng-av{width:66px;height:66px;border-radius:20px;flex:none;display:grid;place-items:center;font-family:var(--fd);font-weight:800;font-size:26px;color:#fff;background:var(--grad);box-shadow:var(--glow)}
+  .eng-body{flex:1;min-width:0}
+  .eng-role{font-family:var(--fm);font-size:9.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--rose);font-weight:700}
+  .eng-name{font-family:var(--fd);font-weight:800;font-size:19px;margin:2px 0 4px}
+  .eng-desc{color:var(--muted);font-size:11.5px;line-height:1.5}
+  .eng-links{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
+  .eng-links a{font-size:11px;font-weight:600;color:var(--text);text-decoration:none;padding:5px 11px;border-radius:9px;background:var(--surface-2);border:1px solid var(--border)}
+
+  .foot{margin-top:26px;margin-bottom:26px;text-align:center}
+  .foot .sign{font-family:var(--fm);font-size:11px;color:var(--muted);cursor:pointer;padding:8px 14px;border-radius:10px;transition:.2s;display:inline-block}
+  .foot .sign:hover{color:var(--rose);background:var(--surface)}
+  .foot .legal{margin-top:10px;font-size:10px;color:var(--muted);line-height:1.6;opacity:.75}
+
+  /* ===== OVERLAYS ===== */
+  .ovl{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;background:rgba(4,2,7,.75);backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:.3s}
+  .ovl.show{opacity:1;pointer-events:auto}
+  .modal{width:100%;max-width:400px;border-radius:24px;padding:26px 22px;background:var(--ink-2);border:1px solid var(--border-2);box-shadow:var(--shadow);transform:translateY(14px) scale(.98);transition:.32s cubic-bezier(.2,.8,.2,1);text-align:center}
+  .ovl.show .modal{transform:none}
+  .m-em{font-size:46px;margin-bottom:6px}
+  .modal h2{font-family:var(--fd);font-weight:800;font-size:23px;margin-bottom:7px}
+  .modal p{color:var(--muted);font-size:13.5px;margin-bottom:18px}
+  .m-actions{display:flex;flex-direction:column;gap:9px}
+  .m-primary{padding:14px;border-radius:13px;font-weight:700;font-size:15px;background:var(--grad);color:#fff;box-shadow:var(--glow)}
+  .m-line{padding:12px;border-radius:13px;font-weight:600;font-size:13.5px;border:1px solid var(--border-2);background:var(--surface);color:var(--text)}
+  .code-in{width:100%;text-align:center;letter-spacing:6px;font-family:var(--fm);font-size:20px;background:var(--surface);border:1.5px solid var(--border-2);border-radius:14px;padding:14px;color:var(--text);outline:none;margin-bottom:6px}
+  .code-in:focus{border-color:var(--rose);box-shadow:var(--glow)}
+  .code-err{color:var(--rose);font-size:12.5px;font-weight:600;min-height:18px;margin-bottom:6px}
+
+  /* ===== ADMIN ===== */
+  .admin{position:fixed;inset:0;z-index:90;background:var(--ink);overflow-y:auto;display:none}
+  .admin.show{display:block}
+  .ad-top{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--glass);backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}
+  .ad-top .logo{margin:0;font-size:19px}
+  .ad-top .tag{font-family:var(--fm);font-size:9px;letter-spacing:1px;background:var(--rose);color:#fff;font-weight:800;padding:3px 9px;border-radius:6px}
+  .ad-close{margin-left:auto;width:38px;height:38px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:18px}
+  .ad-body{max-width:900px;margin:0 auto;padding:20px 18px 60px}
+  .ad-h{font-family:var(--fd);font-weight:800;font-size:26px;margin-bottom:4px}
+  .ad-sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+  .ad-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}
+  .ad-card{background:var(--glass);border:1px solid var(--glass-brd);border-radius:18px;padding:18px}
+  .ad-card .k{font-family:var(--fm);font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+  .ad-card .v{font-family:var(--fd);font-weight:800;font-size:32px;margin-top:6px}
+  .ad-card .v.rose{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .ad-card .v.green{color:var(--green)}
+  .ad-status{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);margin-bottom:18px}
+  .ad-status .d{width:8px;height:8px;border-radius:50%}
+  .ad-sec{font-family:var(--fm);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:22px 0 10px;padding-bottom:7px;border-bottom:1px solid var(--border)}
+  .online-list{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+  .online-row{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:13px;background:var(--surface);border:1px solid var(--border)}
+  .online-row .av{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;font-family:var(--fd);font-weight:800;background:var(--grad);color:#fff;position:relative}
+  .online-row .av i{position:absolute;bottom:0;right:0;width:11px;height:11px;border-radius:50%;background:var(--green);border:2.5px solid var(--ink)}
+  .online-row b{font-size:14px;font-family:var(--fd)}
+  .online-row small{display:block;color:var(--muted);font-size:11px}
+  .online-row .plan{margin-left:auto;font-family:var(--fm);font-size:10px;padding:4px 9px;border-radius:7px;background:var(--surface-2);color:var(--gold)}
+  .tbl-wrap{overflow-x:auto;border-radius:16px;border:1px solid var(--border);background:var(--glass)}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:640px}
+  th{text-align:left;font-family:var(--fm);font-size:9.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
+  td{padding:12px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  .pill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:7px}
+  .pill.paid{background:rgba(55,211,153,.15);color:var(--green)}
+  .pill.free{background:var(--surface-2);color:var(--muted)}
+  .pill.plan{background:rgba(232,176,75,.15);color:var(--gold)}
+  .ad-empty{padding:30px;text-align:center;color:var(--muted);font-size:13px}
+  .ad-note{margin-top:20px;font-size:11px;color:var(--muted);line-height:1.6;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px}
+  .demo-flag{font-family:var(--fm);font-size:9px;background:var(--violet);color:#fff;padding:2px 7px;border-radius:5px;margin-left:8px;letter-spacing:.5px}
+
+  .toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%) translateY(16px);z-index:130;background:var(--ink-2);border:1px solid var(--border-2);border-radius:13px;padding:11px 17px;font-size:13px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.28s}
+  .toast.show{opacity:1;transform:translateX(-50%)}
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;transition-duration:.01ms!important}}
+  @media(max-width:420px){.feats{grid-template-columns:1fr 1fr}.eng{flex-direction:row}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<!-- AGE GATE -->
+<div class="ovl" id="ageGate">
+  <div class="modal">
+    <div class="m-em">🔞</div><h2>Réservé aux adultes</h2>
+    <p>AURA est un service de rencontre entre adultes (18 ans et plus).</p>
+    <div class="m-actions">
+      <button class="m-primary" onclick="passAge(true)">J'ai 18 ans ou plus</button>
+      <button class="m-line" onclick="passAge(false)">J'ai moins de 18 ans</button>
+    </div>
+  </div>
+</div>
+
+<!-- CODE ADMIN -->
+<div class="ovl" id="codeModal">
+  <div class="modal">
+    <div class="m-em">🔐</div><h2>Accès réservé</h2>
+    <p>Console d'administration — entre le code d'accès.</p>
+    <input class="code-in" id="codeIn" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkCode()">
+    <div class="code-err" id="codeErr"></div>
+    <div class="m-actions">
+      <button class="m-primary" onclick="checkCode()">Déverrouiller</button>
+      <button class="m-line" onclick="hideOv('codeModal')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div class="admin" id="admin">
+  <div class="ad-top">
+    <div class="logo"><span class="adot"></span><b style="font-size:19px">AURA</b></div>
+    <span class="tag">ADMIN</span>
+    <button class="ad-close" onclick="closeAdmin()">✕</button>
+  </div>
+  <div class="ad-body">
+    <div class="ad-h">Console d'administration</div>
+    <div class="ad-sub">Vue d'ensemble en temps réel · Groupe Alpha Nex Strasbourg</div>
+    <div class="ad-status" id="adStatus"><span class="d" style="background:var(--muted)"></span>Supabase : vérification…</div>
+    <div class="ad-cards" id="adCards"></div>
+    <div class="ad-sec">🟢 Connectés maintenant</div>
+    <div class="online-list" id="onlineList"></div>
+    <div class="ad-sec">👥 Comptes clients</div>
+    <div class="tbl-wrap"><table><thead><tr><th>Prénom</th><th>Email</th><th>Âge</th><th>Ville</th><th>Orientation</th><th>Forfait</th><th>Payé</th><th>Inscrit</th></tr></thead><tbody id="adRows"></tbody></table></div>
+    <div class="ad-note">📊 D'autres modules arrivent (modération, signalements, revenus, export CSV…). En prod, cette console lit <b>Supabase</b> (comptes, sessions temps réel, visites) au lieu du localStorage local à l'appareil.</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="logo"><span class="adot"></span><b>AURA</b></div>
+
+  <div class="hero">
+    <h1>La rencontre,<br><em>nouvelle génération</em></h1>
+    <p>Des profils près de chez toi à Strasbourg. Discret, respectueux, sans faux-semblants.</p>
+    <div class="badge"><span class="g"></span><span id="onlineNow">—</span> personnes actives</div>
+  </div>
+
+  <div class="cta">
+    <button class="cta-primary" onclick="openApp()">Ouvrir l'app →</button>
+    <button class="cta-line" onclick="openApp()">J'ai déjà un compte</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="stVisits">0</b><span>Visites</span></div>
+    <div class="stat"><b id="stMembers">0</b><span>Membres</span></div>
+    <div class="stat"><b>Strasbourg</b><span>67 · Alsace</span></div>
+  </div>
+
+  <div class="feats">
+    <div class="feat"><div class="fe">🔗</div><h4>Réseaux sur accord</h4><p>Tes réseaux visibles seulement si tu acceptes. Tu gardes le contrôle.</p></div>
+    <div class="feat"><div class="fe">💘</div><h4>Coach Love IA</h4><p>Un wingman pour tes ouvertures, relances et idées de date.</p></div>
+    <div class="feat"><div class="fe">🎨</div><h4>Thème sur mesure</h4><p>Clair, sombre, 8 couleurs. Ton app, ton style.</p></div>
+    <div class="feat"><div class="fe">🛡️</div><h4>Sûr &amp; consentant</h4><p>18+, signalement, blocage. Le respect avant tout.</p></div>
+  </div>
+
+  <!-- BIO INGÉNIEUR ~3cm -->
+  <div class="eng">
+    <div class="eng-av">B</div>
+    <div class="eng-body">
+      <div class="eng-role">Conçu &amp; développé par</div>
+      <div class="eng-name">Brice Jacotet</div>
+      <div class="eng-desc">Ingénieur web &amp; concepteur d'applications — Groupe Alpha Nex Strasbourg / Alpha OS. SaaS, PWA et plateformes IA en architecture ultra-optimisée, zéro coût d'infra.</div>
+      <div class="eng-links">
+        <a href="mailto:strassweb67@gmail.com">✉️ strassweb67@gmail.com</a>
+        <a href="https://alpha-korner.com" target="_blank" rel="noopener">🌐 alpha-korner.com</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="sign" onclick="showOv('codeModal');setTimeout(()=>document.getElementById('codeIn').focus(),200)">@ By Brice Jct · Alpha OS · Groupe Alpha Nex Strasbourg</div>
+    <div class="legal">Service réservé aux adultes (18+). Rencontre entre personnes majeures et consentantes.<br>Démo · en prod : Supabase Auth, vérification d'âge conforme, RGPD &amp; DSA.</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== STORAGE + SUPABASE (prêt, dégradé gracieux) ===== */
+const SUPA={url:'https://uvjlrlbymzkogvsfrzdi.supabase.co',key:'sb_publishable_CIsER_ksjunmYC73dq3VPg_0lQjUvCL'};
+let supa=null,supaOK=false;
+(async()=>{try{const m=await import('https://esm.sh/@supabase/supabase-js@2');supa=m.createClient(SUPA.url,SUPA.key);supaOK=true;setStatus();try{await supa.from('visits').insert({ua:navigator.userAgent.slice(0,120),at:new Date().toISOString()});}catch(e){}}catch(e){supaOK=false;setStatus();}})();
+const store={ok:false,mem:{},init(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t');this.ok=true}catch(e){this.ok=false}},get(k){if(this.ok){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}return this.mem[k]??null},set(k,v){if(this.ok){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}this.mem[k]=v}};
+store.init();
+
+/* ===== FOND ANIMÉ ===== */
+(function(){const cv=document.getElementById('bg');const ctx=cv.getContext('2d');let w,h,parts=[];
+ function rs(){w=cv.width=Math.floor(innerWidth*Math.min(devicePixelRatio,2));h=cv.height=Math.floor(innerHeight*Math.min(devicePixelRatio,2));}
+ rs();addEventListener('resize',rs);
+ for(let i=0;i<58;i++)parts.push({x:Math.random(),y:Math.random(),r:Math.random()*2+.5,vx:(Math.random()-.5)*.0005,vy:(Math.random()-.5)*.0005,a:Math.random()*.5+.15});
+ let t=0;const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ function frame(){t+=.005;ctx.clearRect(0,0,w,h);
+   const blobs=[[.22,.15,'#FF4D6D'],[.8,.12,'#7C3AED'],[.5,.92,'#4EA8FF'],[.12,.72,'#FF8A5B']];
+   blobs.forEach((b,i)=>{const x=(b[0]+Math.sin(t+i*1.3)*.07)*w,y=(b[1]+Math.cos(t*.8+i)*.07)*h;const g=ctx.createRadialGradient(x,y,0,x,y,w*.55);g.addColorStop(0,b[2]+'70');g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);});
+   ctx.fillStyle='rgba(255,255,255,.55)';
+   parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>1)p.vx*=-1;if(p.y<0||p.y>1)p.vy*=-1;ctx.globalAlpha=p.a;ctx.beginPath();ctx.arc(p.x*w,p.y*h,p.r*Math.min(devicePixelRatio,2),0,7);ctx.fill();});
+   ctx.globalAlpha=1;if(!reduce)requestAnimationFrame(frame);}
+ frame();
+})();
+
+/* ===== VISITES ===== */
+function bumpVisit(){let v=(+store.get('aura_visits')||0)+1;store.set('aura_visits',v);return v;}
+function fmt(n){return n.toLocaleString('fr-FR');}
+
+/* ===== DONNÉES DÉMO ADMIN (si vide en preview isolée) ===== */
+const DEMO=[
+ {name:'Camille',email:'camille@demo.fr',age:26,city:'Strasbourg',orient:'hetero',plan:'plus',paid:true,createdAt:Date.now()-864e5*4},
+ {name:'Thomas',email:'thomas@demo.fr',age:28,city:'Schiltigheim',orient:'bi',plan:'start',paid:true,createdAt:Date.now()-864e5*2},
+ {name:'Léa',email:'lea@demo.fr',age:23,city:'Strasbourg',orient:'lesbienne',plan:null,paid:false,createdAt:Date.now()-864e5},
+];
+const ORIENT={hetero:'Hétéro',gay:'Gay',lesbienne:'Lesbienne',bi:'Bi',pan:'Pan',trans:'Transgenre',autre:'Autre',prive:'Privé','':'—'};
+const PLANS={start:'Découverte',plus:'AURA+',max:'AURA Max'};
+
+function getAccounts(){const a=store.get('aura_accounts')||{};const arr=Object.entries(a).map(([email,v])=>({email,name:v.name,age:v.age,city:v.profile?.city||'—',orient:v.profile?.orient||'',plan:v.plan,paid:v.paid,createdAt:v.createdAt||Date.now()}));return arr.length?{arr,demo:false}:{arr:DEMO,demo:true};}
+function getOnline(){const s=store.get('aura_sessions')||{};const now=Date.now();const arr=Object.entries(s).map(([email,v])=>({email,...v})).filter(v=>now-(v.ts||0)<60000);if(arr.length)return{arr,demo:false};return{arr:[{email:'camille@demo.fr',name:'Camille',city:'Strasbourg',plan:'plus'},{email:'thomas@demo.fr',name:'Thomas',city:'Schiltigheim',plan:'start'}],demo:true};}
+
+/* ===== BOOT VISITES + BADGE ===== */
+const visits=bumpVisit();
+document.getElementById('stVisits').textContent=fmt(visits);
+(function(){const {arr}=getAccounts();document.getElementById('stMembers').textContent=fmt(arr.length);const on=getOnline().arr.length;document.getElementById('onlineNow').textContent=on+(on>1?'':'');})();
+
+/* ===== ÂGE + APP ===== */
+function passAge(ok){if(ok){store.set('aura_age_ok',1);hideOv('ageGate');}else document.querySelector('#ageGate .modal').innerHTML='<div class="m-em">🚫</div><h2>Accès refusé</h2><p>Service strictement réservé aux personnes majeures.</p>';}
+function openApp(){store.set('aura_age_ok',1);location.href='app.html';}
+
+/* ===== CODE ADMIN ===== */
+function checkCode(){const v=document.getElementById('codeIn').value;const err=document.getElementById('codeErr');if(v==='Treza670'){err.textContent='';document.getElementById('codeIn').value='';hideOv('codeModal');openAdmin();}else{err.textContent='Code incorrect.';document.getElementById('codeIn').value='';}}
+function openAdmin(){renderAdmin();document.getElementById('admin').classList.add('show');}
+function closeAdmin(){document.getElementById('admin').classList.remove('show');}
+function setStatus(){const el=document.getElementById('adStatus');if(!el)return;if(supaOK)el.innerHTML='<span class="d" style="background:var(--green)"></span>Supabase : connecté';else el.innerHTML='<span class="d" style="background:var(--gold)"></span>Supabase : hors-ligne (localStorage)';}
+function renderAdmin(){setStatus();
+ const acc=getAccounts();const on=getOnline();const visits=+store.get('aura_visits')||0;
+ document.getElementById('adCards').innerHTML=`
+   <div class="ad-card"><div class="k">Visites totales</div><div class="v rose">${fmt(visits)}</div></div>
+   <div class="ad-card"><div class="k">Comptes créés</div><div class="v">${fmt(acc.arr.length)}${acc.demo?'<span class="demo-flag">DÉMO</span>':''}</div></div>
+   <div class="ad-card"><div class="k">En ligne</div><div class="v green">${on.arr.length}${on.demo?'<span class="demo-flag">DÉMO</span>':''}</div></div>
+   <div class="ad-card"><div class="k">Abonnés payants</div><div class="v">${fmt(acc.arr.filter(a=>a.paid).length)}</div></div>`;
+ document.getElementById('onlineList').innerHTML=on.arr.map(u=>`<div class="online-row"><div class="av">${(u.name||'?')[0].toUpperCase()}<i></i></div><div><b>${u.name||'—'}</b><small>📍 ${u.city||'—'}</small></div><span class="plan">${PLANS[u.plan]||'—'}</span></div>`).join('')||'<div class="ad-empty">Personne connecté à l\'instant.</div>';
+ document.getElementById('adRows').innerHTML=acc.arr.map(a=>`<tr><td><b>${a.name||'—'}</b></td><td>${a.email}</td><td>${a.age||'—'}</td><td>${a.city||'—'}</td><td>${ORIENT[a.orient]||'—'}</td><td>${a.plan?`<span class="pill plan">${PLANS[a.plan]}</span>`:'<span class="pill free">—</span>'}</td><td>${a.paid?'<span class="pill paid">✓ payé</span>':'<span class="pill free">non</span>'}</td><td>${new Date(a.createdAt).toLocaleDateString('fr-FR')}</td></tr>`).join('')||'<tr><td colspan="8" class="ad-empty">Aucun compte.</td></tr>';}
+
+/* ===== HELPERS ===== */
+function showOv(id){document.getElementById(id).classList.add('show')}
+function hideOv(id){document.getElementById(id).classList.remove('show')}
+let tT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2000);}
+
+/* ===== BOOT ===== */
+if(!store.get('aura_age_ok'))showOv('ageGate');
+</script>
+</body>
+</html>
