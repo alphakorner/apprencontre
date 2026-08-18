@@ -418,6 +418,7 @@ img{display:block;object-fit:cover}
 /* Fix 3e colonne coupée */
 #v-grid{overflow-x:hidden}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 <canvas id="bg"></canvas>
@@ -878,19 +879,13 @@ const SUPA_KEY='sb_publishable_BGpHF_ldX9pkTO273CPC0g_2s8cD8M-';
 let supa=null,supaOK=false;
 let me=null,sessionEmail=null;
 
-// Init Supabase — avec timeout 3s
-let _supaInitDone=false;
-function _doBootOnce(){if(_supaInitDone)return;_supaInitDone=true;boot();}
-setTimeout(()=>{_doBootOnce();},3000); // fallback si import lent
-import('https://esm.sh/@supabase/supabase-js@2').then(m=>{
-  try{
-    supa=m.createClient(SUPA_URL,SUPA_KEY,{
-      auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:'aura_auth'}
-    });
-    supaOK=true;
-  }catch(e){supaOK=false;}
-  _doBootOnce();
-}).catch(()=>{supaOK=false;_doBootOnce();});
+// Init Supabase via CDN global (chargé dans <head>)
+try{
+  supa=window.supabase.createClient(SUPA_URL,SUPA_KEY,{
+    auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:'aura_auth'}
+  });
+  supaOK=true;
+}catch(e){supaOK=false;console.warn('Supabase init err',e);}
 
 // ─── PROFIL ───
 async function loadProfile(email){
@@ -1066,16 +1061,15 @@ async function doLogin(){
     const {data,error}=await supa.auth.signInWithPassword({email,password:pass});
     if(error){
       setAuthLoading(btn,false);
-      if(error.message.includes('Invalid login'))setAuthErr('liErr','Email ou mot de passe incorrect.');
-      else if(error.message.includes('Email not confirmed'))setAuthErr('liErr',`Confirme ton email d'abord.`);
+      if(error.message.includes('Invalid login')||error.message.includes('invalid'))
+        setAuthErr('liErr','Email ou mot de passe incorrect.');
       else setAuthErr('liErr',error.message);
       return;
     }
     await loadProfile(email);
   } else {
-    // Fallback local
     const local=lsGet('aura_me_'+email);
-    if(!local){setAuthLoading(btn,false);setAuthErr('liErr','Compte introuvable.');return;}
+    if(!local){setAuthLoading(btn,false);setAuthErr('liErr','Compte introuvable (hors ligne).');return;}
     const h=await hashPass(pass);
     if(local._hash!==h){setAuthLoading(btn,false);setAuthErr('liErr','Mot de passe incorrect.');return;}
     me=local;sessionEmail=email;
@@ -1094,4 +1088,8 @@ async function doSignup(){
   setAuthErr('suErr','');
   if(!name){setAuthErr('suErr','Prénom requis.');return;}
   if(isNaN(age)||age<18){setAuthErr('suErr','18 ans minimum.');return;}
-  if(!email.includes('@')
+  if(!email.includes('@')){setAuthErr('suErr','Email invalide.');return;}
+  if(pass.length<8){setAuthErr('suErr','8 caractères minimum.');return;}
+  setAuthLoading(btn,true);
+  if(supaOK){
+    const {data,error}=await supa.auth.si
