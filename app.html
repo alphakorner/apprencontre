@@ -878,25 +878,19 @@ const SUPA_KEY='sb_publishable_BGpHF_ldX9pkTO273CPC0g_2s8cD8M-';
 let supa=null,supaOK=false;
 let me=null,sessionEmail=null;
 
-// Init Supabase
-(async()=>{
+// Init Supabase — avec timeout 3s
+let _supaInitDone=false;
+function _doBootOnce(){if(_supaInitDone)return;_supaInitDone=true;boot();}
+setTimeout(()=>{_doBootOnce();},3000); // fallback si import lent
+import('https://esm.sh/@supabase/supabase-js@2').then(m=>{
   try{
-    const m=await import('https://esm.sh/@supabase/supabase-js@2');
     supa=m.createClient(SUPA_URL,SUPA_KEY,{
-      auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}
+      auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:'aura_auth'}
     });
     supaOK=true;
-    // Écouter les changements de session
-    supa.auth.onAuthStateChange(async(event,session)=>{
-      if(event==='SIGNED_IN'&&session){
-        await loadProfile(session.user.email);
-      } else if(event==='SIGNED_OUT'){
-        me=null;sessionEmail=null;
-      }
-    });
-  }catch(e){supaOK=false;console.warn('Supabase non disponible — mode local',e);}
-  boot();
-})();
+  }catch(e){supaOK=false;}
+  _doBootOnce();
+}).catch(()=>{supaOK=false;_doBootOnce();});
 
 // ─── PROFIL ───
 async function loadProfile(email){
@@ -1073,7 +1067,7 @@ async function doLogin(){
     if(error){
       setAuthLoading(btn,false);
       if(error.message.includes('Invalid login'))setAuthErr('liErr','Email ou mot de passe incorrect.');
-      else if(error.message.includes('Email not confirmed'))setAuthErr('liErr','Confirme ton email d'abord.');
+      else if(error.message.includes('Email not confirmed'))setAuthErr('liErr',`Confirme ton email d'abord.`);
       else setAuthErr('liErr',error.message);
       return;
     }
@@ -1099,3 +1093,5 @@ async function doSignup(){
   const btn=document.querySelector('#formSignup .sub');
   setAuthErr('suErr','');
   if(!name){setAuthErr('suErr','Prénom requis.');return;}
+  if(isNaN(age)||age<18){setAuthErr('suErr','18 ans minimum.');return;}
+  if(!email.includes('@')
