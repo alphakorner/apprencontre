@@ -1,2178 +1,897 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
-  <meta name="theme-color" content="#090510" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>AURA · App</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --rose: #ff4d6d;
-      --coral: #ff8a5b;
-      --violet: #7c3aed;
-      --blue: #4ea8ff;
-      --gold: #e8b04b;
-      --green: #37d399;
-      --grad: linear-gradient(135deg, var(--rose), var(--coral));
-      --grad-2: linear-gradient(135deg, #7c3aed, #ff4d6d 55%, #ff8a5b);
-      --glow: 0 0 34px rgba(255, 77, 109, 0.38);
-      --ink: #050308;
-      --ink-2: #0b0812;
-      --ink-3: #120d1d;
-      --text: #f7eef7;
-      --muted: #a592ba;
-      --surface: rgba(255,255,255,0.06);
-      --surface-2: rgba(255,255,255,0.1);
-      --border: rgba(255,255,255,0.09);
-      --border-2: rgba(255,255,255,0.2);
-      --glass: rgba(13, 8, 18, 0.66);
-      --shadow: 0 30px 70px -25px rgba(0, 0, 0, 0.88);
-      --fd: "Bricolage Grotesque", system-ui, sans-serif;
-      --fb: "Inter", system-ui, sans-serif;
-      --fm: "Space Mono", ui-monospace, monospace;
-      --nav-h: 82px;
-      --safe-top: env(safe-area-inset-top, 0px);
-      --safe-bottom: env(safe-area-inset-bottom, 0px);
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#090510" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>AURA · Rencontre</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --rose: #ff4d6d;
+        --coral: #ff8a5b;
+        --violet: #8c5bff;
+        --blue: #68c4ff;
+        --gold: #f7c66b;
+        --green: #48d7a7;
+        --ink: #06050b;
+        --ink-2: #110d17;
+        --ink-3: #1b1423;
+        --panel: rgba(19, 14, 26, 0.82);
+        --panel-2: rgba(255, 255, 255, 0.06);
+        --panel-3: rgba(255, 255, 255, 0.12);
+        --line: rgba(255,255,255,0.08);
+        --line-strong: rgba(255,255,255,0.18);
+        --text: #f8edf9;
+        --muted: #a799bf;
+        --muted-2: #cab9d8;
+        --shadow: 0 25px 60px -25px rgba(0,0,0,0.8);
+        --fd: "Bricolage Grotesque", system-ui, sans-serif;
+        --fb: "Inter", system-ui, sans-serif;
+        --nav-h: 88px;
+        --safe-top: env(safe-area-inset-top, 0px);
+        --safe-bottom: env(safe-area-inset-bottom, 0px);
+      }
 
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--ink);
-      color: var(--text);
-      font-family: var(--fb);
-      overflow: hidden;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
-    body { display: flex; justify-content: center; }
-    button, input, textarea, select { font: inherit; }
-    button { border: none; background: none; color: inherit; cursor: pointer; }
-    img { display: block; max-width: 100%; }
-    a { color: inherit; text-decoration: none; }
-    ::selection { background: var(--rose); color: white; }
-    canvas#bg {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      opacity: .8;
-      filter: blur(18px) saturate(1.3);
-    }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--ink);
+        color: var(--text);
+        font-family: var(--fb);
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
 
-    .app-shell {
-      position: relative;
-      z-index: 2;
-      width: min(100%, 520px);
-      height: 100dvh;
-      max-height: 100dvh;
-      background: rgba(10, 7, 15, 0.36);
-      border-left: 1px solid rgba(255,255,255,0.06);
-      border-right: 1px solid rgba(255,255,255,0.06);
-      overflow: hidden;
-      display: none;
-      flex-direction: column;
-      box-shadow: var(--shadow);
-    }
-    .app-shell.show { display: flex; }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-    .topbar {
-      position: relative;
-      flex: none;
-      height: 62px;
-      padding: 12px 14px 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(12, 7, 18, 0.76);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border-bottom: 1px solid var(--border);
-    }
-    .ibtn {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      font-size: 17px;
-      position: relative;
-      flex: none;
-    }
-    .ibtn.on {
-      background: var(--grad);
-      border-color: transparent;
-      box-shadow: var(--glow);
-    }
-    .topbar .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--fd);
-      font-weight: 800;
-      font-size: 1.15rem;
-      letter-spacing: .02em;
-    }
-    .brand-mark {
-      width: 21px;
-      height: 21px;
-      border-radius: 50%;
-      background: var(--grad);
-      box-shadow: var(--glow);
-      position: relative;
-      flex: none;
-    }
-    .brand-mark::after {
-      content: "";
-      position: absolute;
-      inset: -5px;
-      border: 1.5px solid rgba(255,77,109,.45);
-      border-radius: 50%;
-      animation: pulseRing 3.5s ease-out infinite;
-    }
-    @keyframes pulseRing {
-      0% { transform: scale(.75); opacity: .52; }
-      100% { transform: scale(2.1); opacity: 0; }
-    }
-    .brand b {
-      background: var(--grad);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .spacer { flex: 1; }
-    .dotbadge {
-      position: absolute;
-      top: -4px;
-      right: -4px;
-      min-width: 18px;
-      height: 18px;
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      font-size: 9px;
-      font-weight: 800;
-      background: var(--rose);
-      color: white;
-      padding: 0 5px;
-      box-shadow: 0 0 18px rgba(255,77,109,.5);
-    }
+      button, input, textarea, select {
+        font: inherit;
+      }
 
-    .cats {
-      flex: none;
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      padding: 10px 14px 8px;
-      background: rgba(12, 8, 18, 0.68);
-      border-bottom: 1px solid var(--border);
-    }
-    .cats::-webkit-scrollbar { display: none; }
-    .cat {
-      flex: none;
-      padding: 9px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-weight: 700;
-      font-size: 12px;
-      transition: .2s ease;
-    }
-    .cat.active {
-      background: var(--grad);
-      color: white;
-      border-color: transparent;
-      box-shadow: var(--glow);
-    }
+      button {
+        border: none;
+        background: none;
+        color: inherit;
+        cursor: pointer;
+      }
 
-    .views {
-      position: relative;
-      flex: 1;
-      overflow: hidden;
-      background: transparent;
-    }
-    .view {
-      position: absolute;
-      inset: 0;
-      display: none;
-      flex-direction: column;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
-      padding-bottom: calc(var(--nav-h) + 18px);
-    }
-    .view.active { display: flex; }
+      img {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+      }
 
-    .grid-head {
-      padding: 12px 14px 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-family: var(--fm);
-      font-size: 10px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      flex: none;
-    }
-    .gpulse {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 10px rgba(55,211,153,.85);
-      animation: blink 1.6s ease-in-out infinite;
-    }
-    @keyframes blink { 50% { opacity: .28; } }
+      a { color: inherit; text-decoration: none; }
+      ::selection { background: var(--rose); color: white; }
 
-    .pgrid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 2px;
-      padding: 0 0 14px;
-    }
-    .tile {
-      position: relative;
-      aspect-ratio: 1 / 1;
-      overflow: hidden;
-      background: rgba(255,255,255,.03);
-      border-radius: 15px;
-      cursor: pointer;
-      transition: transform .18s ease;
-      animation: cardIn .36s ease both;
-    }
-    @keyframes cardIn {
-      from { opacity: 0; transform: scale(.96); }
-      to { opacity: 1; transform: none; }
-    }
-    .tile:active { transform: scale(.98); }
-    .tile::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,.12) 50%, transparent 68%);
-      z-index: 1;
-    }
-    .tile-img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      background: linear-gradient(135deg, #381a41, #1a1933);
-    }
-    .tile-badge {
-      position: absolute;
-      top: 7px;
-      left: 7px;
-      z-index: 3;
-      font-size: 8.5px;
-      font-weight: 800;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      padding: 4px 7px;
-      border-radius: 8px;
-      background: rgba(255,255,255,.12);
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(255,255,255,.12);
-    }
-    .tile-badge.new { background: var(--grad); color: white; border-color: transparent; }
-    .tile-badge.orient { background: rgba(124,58,237,.7); color: white; border-color: rgba(255,255,255,.18); }
-    .tile-line {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 3;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 9px 9px;
-    }
-    .t-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 8px rgba(55,211,153,.9);
-      flex: none;
-    }
-    .t-name {
-      font-family: var(--fd);
-      font-size: 12.5px;
-      font-weight: 800;
-      color: white;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+      canvas#bg {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        opacity: 0.8;
+        filter: blur(18px) saturate(1.3);
+      }
 
-    .profile-sheet {
-      position: fixed;
-      inset: 0;
-      z-index: 60;
-      display: none;
-      background: rgba(4, 1, 10, 0.7);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-    .profile-sheet.show { display: block; }
-    .sheet {
-      position: absolute;
-      left: 50%;
-      bottom: 0;
-      transform: translateX(-50%) translateY(100%);
-      width: min(100%, 520px);
-      height: 82vh;
-      max-height: 760px;
-      background: rgba(10, 7, 18, 0.98);
-      border-radius: 28px 28px 0 0;
-      border: 1px solid var(--border-2);
-      border-bottom: none;
-      transition: transform .32s ease;
-      overflow: hidden;
-      box-shadow: 0 -30px 80px rgba(0,0,0,.65);
-    }
-    .profile-sheet.show .sheet { transform: translateX(-50%) translateY(0); }
-    .sheet-close {
-      position: absolute;
-      right: 16px;
-      top: 14px;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.08);
-      border: 1px solid var(--border);
-      font-size: 20px;
-      z-index: 5;
-    }
-    .sheet-media {
-      position: relative;
-      height: 44%;
-      background: linear-gradient(135deg, #251a31, #120d1e);
-      overflow: hidden;
-    }
-    .sheet-media img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .sheet-media::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(9,5,13,.9), rgba(9,5,13,.12) 56%, transparent 75%);
-    }
-    .sheet-top {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 14px;
-      z-index: 2;
-    }
-    .sheet-top .pill {
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.12);
-      color: white;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-    .sheet-body {
-      position: relative;
-      z-index: 2;
-      padding: 18px 18px 0;
-      overflow-y: auto;
-      height: calc(100% - 44%);
-      -webkit-overflow-scrolling: touch;
-    }
-    .sheet-name {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-    .sheet-name h3 {
-      margin: 0;
-      font-family: var(--fd);
-      font-size: clamp(2rem, 6vw, 2.5rem);
-      letter-spacing: -.03em;
-    }
-    .sheet-age { color: var(--muted); font-size: 1.15rem; font-weight: 600; }
-    .meta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .meta-pill {
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid var(--border);
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .meta-pill.orient {
-      background: rgba(124,58,237,.16);
-      border-color: rgba(124,58,237,.45);
-      color: #d9c4ff;
-    }
-    .sheet-bio {
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 14px;
-      margin-bottom: 16px;
-    }
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-    .stat-box {
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: rgba(255,255,255,.04);
-      padding: 12px 8px 10px;
-      text-align: center;
-    }
-    .stat-box b {
-      display: block;
-      font-family: var(--fd);
-      font-size: 1.25rem;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .stat-box span {
-      display: block;
-      margin-top: 5px;
-      font-family: var(--fm);
-      font-size: 9px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .social-box {
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 14px;
-      background: rgba(255,255,255,.03);
-      margin-bottom: 16px;
-    }
-    .social-box h4 {
-      margin: 0 0 10px;
-      font-family: var(--fd);
-      font-size: 1rem;
-    }
-    .social-links { display: flex; flex-direction: column; gap: 8px; }
-    .slink {
-      display: block;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid var(--border);
-      font-size: 13px;
-      color: var(--text);
-    }
-    .social-locked .slink {
-      filter: blur(4px);
-      opacity: .5;
-      user-select: none;
-    }
-    .action-row {
-      display: flex;
-      gap: 10px;
-      padding: 12px 0 18px;
-    }
-    .action-row button {
-      flex: 1;
-      padding: 14px 12px;
-      border-radius: 14px;
-      font-weight: 800;
-      font-size: 14px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.04);
-    }
-    .action-row .reject { color: var(--text); }
-    .action-row .like {
-      background: rgba(255,77,109,.14);
-      border-color: rgba(255,77,109,.3);
-      color: var(--rose);
-    }
-    .action-row .message {
-      background: var(--grad);
-      border-color: transparent;
-      color: white;
-      box-shadow: var(--glow);
-    }
+      .app-shell {
+        position: relative;
+        z-index: 2;
+        width: min(100%, 440px);
+        height: 100dvh;
+        background: rgba(7, 5, 12, 0.6);
+        border-left: 1px solid rgba(255,255,255,0.06);
+        border-right: 1px solid rgba(255,255,255,0.06);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
 
-    .bnav {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      padding: 0 10px calc(10px + var(--safe-bottom));
-      z-index: 30;
-      pointer-events: none;
-    }
-    .bnav-inner {
-      pointer-events: auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      width: 100%;
-      height: var(--nav-h);
-      border-radius: 28px;
-      background: rgba(14, 9, 20, 0.88);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 -10px 30px rgba(0,0,0,0.35);
-    }
-    .nav-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      color: var(--muted);
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: .02em;
-      position: relative;
-      height: 100%;
-    }
-    .nav-item .orb {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      font-size: 19px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      transition: .25s ease;
-    }
-    .nav-item.active {
-      color: var(--text);
-    }
-    .nav-item.active .orb {
-      background: var(--grad);
-      box-shadow: var(--glow);
-      color: white;
-      transform: translateY(-8px) scale(1.06);
-    }
-    .nav-item .badge {
-      position: absolute;
-      top: 6px;
-      right: calc(50% - 16px);
-      min-width: 16px;
-      height: 16px;
-      border-radius: 999px;
-      background: var(--rose);
-      color: white;
-      display: none;
-      place-items: center;
-      font-size: 8.5px;
-      font-weight: 800;
-      padding: 0 4px;
-      box-shadow: 0 0 18px rgba(255,77,109,.42);
-    }
-    .nav-item .badge.show { display: grid; }
+      .topbar {
+        flex: none;
+        height: 72px;
+        padding: calc(12px + var(--safe-top)) 18px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        background: rgba(15, 10, 20, 0.7);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-bottom: 1px solid var(--line);
+      }
 
-    .screen {
-      position: fixed;
-      inset: 0;
-      z-index: 50;
-      display: none;
-      background: rgba(5, 3, 9, 0.72);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-    .screen.show { display: block; }
-    .chat-window {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      background: rgba(9, 6, 15, 0.98);
-      border: 1px solid rgba(255,255,255,.06);
-    }
-    .chat-head {
-      flex: none;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 14px;
-      background: rgba(18, 12, 25, 0.9);
-      border-bottom: 1px solid var(--border);
-    }
-    .chat-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: var(--grad);
-      color: white;
-      font-family: var(--fd);
-      font-weight: 800;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--glow);
-      flex: none;
-    }
-    .chat-avatar::after {
-      content: "";
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background: var(--green);
-      border: 2px solid rgba(9, 6, 15, 1);
-    }
-    .chat-name {
-      font-family: var(--fd);
-      font-size: 1.05rem;
-      font-weight: 800;
-      flex: 1;
-    }
-    .chat-sub { color: var(--muted); font-size: 11px; }
-    .chat-close {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      font-size: 18px;
-    }
-    .chat-scroll {
-      flex: 1;
-      overflow-y: auto;
-      padding: 14px 14px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      -webkit-overflow-scrolling: touch;
-    }
-    .bubble {
-      max-width: 76%;
-      padding: 11px 14px;
-      border-radius: 18px;
-      line-height: 1.5;
-      font-size: 14px;
-      word-break: break-word;
-    }
-    .bubble.in {
-      align-self: flex-start;
-      background: rgba(255,255,255,.06);
-      border: 1px solid var(--border);
-      border-bottom-left-radius: 6px;
-    }
-    .bubble.out {
-      align-self: flex-end;
-      background: var(--grad);
-      border-bottom-right-radius: 6px;
-      box-shadow: var(--glow);
-    }
-    .bubble.sys {
-      align-self: center;
-      max-width: 90%;
-      font-family: var(--fm);
-      font-size: 10px;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      color: var(--muted);
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      text-align: center;
-    }
-    .chat-composer {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      padding: 10px 12px calc(10px + var(--safe-bottom));
-      background: rgba(12, 8, 18, 0.92);
-      border-top: 1px solid var(--border);
-    }
-    .chat-composer input {
-      flex: 1;
-      width: 100%;
-      background: rgba(255,255,255,.05);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 12px 14px;
-      color: white;
-      font-size: 15px;
-    }
-    .send-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: var(--grad);
-      color: white;
-      box-shadow: var(--glow);
-      flex: none;
-    }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--fd);
+        font-weight: 800;
+        letter-spacing: 0.15em;
+        font-size: 0.86rem;
+      }
 
-    .likes-wrap,
-    .shop-wrap,
-    .profile-wrap,
-    .coach-wrap {
-      padding: 12px 12px 20px;
-    }
-    .likes-head,
-    .shop-head,
-    .profile-head,
-    .coach-head {
-      padding: 10px 6px 14px;
-    }
-    .likes-head h2,
-    .shop-head h2,
-    .profile-head h2,
-    .coach-head h2 {
-      margin: 0;
-      font-family: var(--fd);
-      font-size: clamp(1.5rem, 6vw, 2.2rem);
-      letter-spacing: -.04em;
-    }
-    .likes-head p,
-    .shop-head p,
-    .profile-head p,
-    .coach-head p {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-    .likes-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
-    .like-card {
-      position: relative;
-      aspect-ratio: 3 / 4;
-      overflow: hidden;
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      cursor: pointer;
-    }
-    .like-card img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .like-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,.8), rgba(0,0,0,.12) 55%, transparent 70%);
-    }
-    .like-info {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 2;
-      padding: 12px 12px 10px;
-    }
-    .like-name {
-      font-family: var(--fd);
-      font-size: 1.1rem;
-      margin-bottom: 2px;
-      font-weight: 800;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .like-meta {
-      color: rgba(255,255,255,.8);
-      font-size: 11.5px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .like-heart {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      z-index: 2;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      font-size: 18px;
-      background: rgba(255,77,109,.24);
-      border: 1px solid rgba(255,255,255,.15);
-      backdrop-filter: blur(6px);
-      box-shadow: 0 0 20px rgba(255,77,109,.2);
-    }
+      .brand-mark {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--rose), var(--coral));
+        box-shadow: 0 0 18px rgba(255, 77, 109, 0.8);
+      }
 
-    .messages-list {
-      display: flex;
-      flex-direction: column;
-      background: rgba(255,255,255,.02);
-      border-top: 1px solid var(--border);
-    }
-    .convo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 100%;
-      padding: 13px 14px;
-      border-bottom: 1px solid rgba(255,255,255,.06);
-      text-align: left;
-      background: transparent;
-    }
-    .convo:hover { background: rgba(255,255,255,.03); }
-    .convo-avatar {
-      position: relative;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      overflow: hidden;
-      background: var(--grad);
-      display: grid;
-      place-items: center;
-      font-family: var(--fd);
-      font-weight: 700;
-      color: white;
-      flex: none;
-      box-shadow: var(--glow);
-    }
-    .convo-avatar::after {
-      content: "";
-      position: absolute;
-      right: 1px;
-      bottom: 1px;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--green);
-      border: 2px solid rgba(9, 6, 15, 1);
-    }
-    .convo-body {
-      flex: 1;
-      min-width: 0;
-    }
-    .convo-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 4px;
-    }
-    .convo-name {
-      font-family: var(--fd);
-      font-size: 15px;
-      font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .convo-time {
-      font-family: var(--fm);
-      font-size: 10px;
-      color: var(--muted);
-      flex: none;
-    }
-    .convo-last {
-      color: var(--muted);
-      font-size: 12.5px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .convo-badge {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: var(--rose);
-      color: white;
-      font-size: 10px;
-      font-weight: 800;
-      flex: none;
-      box-shadow: 0 0 18px rgba(255,77,109,.35);
-    }
+      .header-meta {
+        font-size: 0.7rem;
+        color: var(--muted);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
 
-    .shop-plan {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-top: 6px;
-    }
-    .plan-hero {
-      background: linear-gradient(135deg, rgba(124,58,237,.2), rgba(255,77,109,.12));
-      border: 1px solid rgba(124,58,237,.26);
-      border-radius: 22px;
-      padding: 18px 18px 14px;
-      position: relative;
-      overflow: hidden;
-    }
-    .plan-hero::before {
-      content: "AURA";
-      position: absolute;
-      right: -8px;
-      top: 55%;
-      transform: translateY(-50%);
-      font-family: var(--fd);
-      font-size: 84px;
-      font-weight: 800;
-      color: rgba(255,255,255,.04);
-      letter-spacing: -.08em;
-    }
-    .plan-hero .name {
-      font-family: var(--fd);
-      font-size: 1.4rem;
-      font-weight: 800;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .plan-hero .price {
-      margin-top: 8px;
-      font-family: var(--fd);
-      font-size: 2.5rem;
-      font-weight: 800;
-      letter-spacing: -.05em;
-    }
-    .plan-hero .price span { font-size: 16px; color: var(--muted); }
-    .plan-hero .meta {
-      margin-top: 14px;
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: rgba(124,58,237,.15);
-      border: 1px solid rgba(124,58,237,.28);
-      font-size: 11px;
-      font-weight: 700;
-    }
-    .plan-hero button {
-      width: 100%;
-      margin-top: 16px;
-      padding: 14px 16px;
-      border-radius: 14px;
-      background: var(--grad);
-      color: white;
-      font-weight: 800;
-      box-shadow: var(--glow);
-    }
-    .plan-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .plan-card {
-      position: relative;
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px 18px;
-    }
-    .plan-card.best {
-      border-color: rgba(255,77,109,.35);
-      background: rgba(255,77,109,.06);
-    }
-    .plan-card .tag {
-      position: absolute;
-      top: -10px;
-      left: 16px;
-      background: var(--grad);
-      color: white;
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      padding: 5px 9px;
-      border-radius: 9px;
-    }
-    .plan-card .head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .plan-card h3 {
-      margin: 0;
-      font-family: var(--fd);
-      font-size: 1.1rem;
-    }
-    .price-tag {
-      font-family: var(--fd);
-      font-size: 1.55rem;
-      font-weight: 800;
-    }
-    .price-tag span { font-size: 12px; color: var(--muted); }
-    .plan-card ul {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-    .plan-card li {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .plan-card li::before {
-      content: "✓";
-      color: var(--green);
-      font-weight: 800;
-      flex: none;
-    }
-    .plan-card .buy {
-      width: 100%;
-      margin-top: 14px;
-      padding: 12px 16px;
-      border-radius: 12px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid var(--border);
-      font-weight: 800;
-    }
+      .icon-ghost {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--line);
+        color: var(--text);
+        font-size: 1rem;
+      }
 
-    .coach-chat {
-      padding: 14px 0 0;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .coach-bubble {
-      max-width: 86%;
-      padding: 12px 14px;
-      border-radius: 18px;
-      font-size: 14px;
-      line-height: 1.5;
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-    }
-    .coach-bubble.user {
-      align-self: flex-end;
-      background: var(--grad);
-      border-color: transparent;
-      box-shadow: var(--glow);
-    }
-    .coach-quick {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 6px 0 10px;
-    }
-    .qbtn {
-      padding: 9px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .coach-composer {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
-    .coach-composer input {
-      width: 100%;
-      background: rgba(255,255,255,.05);
-      border: 1px solid var(--border);
-      padding: 12px 14px;
-      border-radius: 16px;
-      color: white;
-      font-size: 15px;
-    }
-    .coach-composer button {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      background: var(--grad);
-      color: white;
-      box-shadow: var(--glow);
-      flex: none;
-    }
+      .screen-stack {
+        position: relative;
+        flex: 1;
+        overflow: hidden;
+      }
 
-    .profile-wrap .settings {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      padding-top: 10px;
-    }
-    .profile-card {
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
-    }
-    .avatar-block {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 6px;
-    }
-    .big-avatar {
-      width: 78px;
-      height: 78px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: var(--grad);
-      box-shadow: var(--glow);
-      font-family: var(--fd);
-      font-weight: 800;
-      font-size: 1.8rem;
-    }
-    .avatar-btn {
-      padding: 9px 16px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      background: rgba(255,255,255,.06);
-      border: 1px solid var(--border);
-    }
-    .setting-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255,255,255,.06);
-    }
-    .setting-row:last-child { border-bottom: none; }
-    .setting-row span {
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .toggle {
-      width: 42px;
-      height: 24px;
-      border-radius: 999px;
-      position: relative;
-      background: rgba(255,255,255,.08);
-      border: 1px solid var(--border);
-      transition: .2s ease;
-    }
-    .toggle::after {
-      content: "";
-      position: absolute;
-      top: 2px;
-      left: 3px;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: white;
-      box-shadow: 0 1px 6px rgba(0,0,0,.4);
-      transition: .2s ease;
-    }
-    .toggle.on {
-      background: var(--grad);
-      border-color: transparent;
-    }
-    .toggle.on::after {
-      left: calc(100% - 19px);
-    }
-    .save-btn {
-      width: 100%;
-      margin-top: 8px;
-      padding: 14px 16px;
-      border-radius: 14px;
-      background: var(--grad);
-      color: white;
-      font-weight: 800;
-      box-shadow: var(--glow);
-    }
+      .screen {
+        position: absolute;
+        inset: 0;
+        padding: 18px 18px calc(var(--nav-h) + 28px);
+        overflow-y: auto;
+        opacity: 0;
+        transform: translateX(18px);
+        pointer-events: none;
+        transition: opacity 0.22s ease, transform 0.22s ease;
+      }
 
-    .ovl {
-      position: fixed;
-      inset: 0;
-      z-index: 80;
-      display: none;
-      place-items: center;
-      background: rgba(4, 1, 9, 0.72);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-    .ovl.show { display: grid; }
-    .modal {
-      width: min(92vw, 380px);
-      background: rgba(12, 8, 18, 0.96);
-      border: 1px solid var(--border-2);
-      border-radius: 26px;
-      padding: 24px 22px 18px;
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
-    .modal-emoji {
-      font-size: 3rem;
-      margin-bottom: 8px;
-    }
-    .modal h2 {
-      margin: 0 0 8px;
-      font-family: var(--fd);
-      font-size: clamp(1.5rem, 5vw, 2rem);
-      letter-spacing: -.04em;
-    }
-    .modal p {
-      margin: 0 0 18px;
-      color: var(--muted);
-      line-height: 1.55;
-      font-size: 13.5px;
-    }
-    .modal-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .primary-btn,
-    .line-btn,
-    .ghost-btn {
-      width: 100%;
-      padding: 14px 16px;
-      border-radius: 14px;
-      font-weight: 800;
-      font-size: 15px;
-    }
-    .primary-btn {
-      background: var(--grad);
-      color: white;
-      box-shadow: var(--glow);
-    }
-    .line-btn {
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border-2);
-      color: var(--text);
-    }
-    .ghost-btn {
-      background: rgba(255,255,255,.03);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 700;
-    }
-    .modal-note {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-      font-size: 10px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
+      .screen.active {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+      }
 
-    .auth-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 92;
-      display: none;
-      place-items: center;
-      background: rgba(5, 3, 9, 0.74);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
-    .auth-screen.show { display: grid; }
-    .auth-card {
-      width: min(92vw, 420px);
-      background: rgba(12, 8, 18, 0.98);
-      border: 1px solid var(--border-2);
-      border-radius: 28px;
-      padding: 22px 18px 18px;
-      box-shadow: var(--shadow);
-    }
-    .auth-top {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    .auth-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--fd);
-      font-size: clamp(1.7rem, 6vw, 2.2rem);
-      font-weight: 800;
-    }
-    .auth-tabs {
-      display: flex;
-      gap: 6px;
-      padding: 4px;
-      border-radius: 14px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      margin-bottom: 16px;
-    }
-    .auth-tabs button {
-      flex: 1;
-      padding: 11px 10px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--muted);
-    }
-    .auth-tabs button.active {
-      background: var(--grad);
-      color: white;
-      box-shadow: var(--glow);
-    }
-    .field { margin-bottom: 12px; }
-    .field label {
-      display: block;
-      margin: 0 0 6px;
-      font-family: var(--fm);
-      font-size: 10px;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .field input {
-      width: 100%;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.05);
-      color: white;
-      padding: 13px 14px;
-      font-size: 15px;
-      outline: none;
-    }
-    .field input:focus {
-      border-color: rgba(255,77,109,.7);
-      box-shadow: 0 0 0 3px rgba(255,77,109,.12);
-    }
-    .auth-error {
-      min-height: 18px;
-      margin: 6px 2px 10px;
-      color: var(--rose);
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .auth-submit {
-      width: 100%;
-      margin-top: 6px;
-      padding: 15px 16px;
-      border-radius: 14px;
-      background: var(--grad);
-      color: white;
-      font-weight: 800;
-      box-shadow: var(--glow);
-    }
-    .auth-note {
-      margin-top: 16px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.6;
-    }
+      .screen::-webkit-scrollbar { width: 0; height: 0; }
 
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: calc(var(--nav-h) + 18px);
-      transform: translateX(-50%) translateY(16px);
-      background: rgba(12, 8, 18, 0.96);
-      border: 1px solid var(--border-2);
-      border-radius: 12px;
-      color: var(--text);
-      padding: 10px 14px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .02em;
-      z-index: 130;
-      opacity: 0;
-      pointer-events: none;
-      transition: .25s ease;
-      box-shadow: 0 24px 40px rgba(0,0,0,.35);
-    }
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+      .panel {
+        background: linear-gradient(180deg, rgba(17,12,22,0.9), rgba(17,12,22,0.7));
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+      }
 
-    @media (max-width: 380px) {
-      .pgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .sheet { height: 86vh; }
-    }
-  </style>
-</head>
-<body>
-  <canvas id="bg"></canvas>
+      .hero {
+        padding: 18px;
+      }
 
-  <div id="authScreen" class="auth-screen show">
-    <div class="auth-card">
-      <div class="auth-top">
-        <div class="auth-brand"><span class="brand-mark"></span><b>AURA</b></div>
-      </div>
-      <div class="auth-tabs">
-        <button class="active" data-tab="login">Connexion</button>
-        <button data-tab="signup">Créer</button>
-      </div>
+      .hero-head,
+      .section-head,
+      .chat-head,
+      .profile-line {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
 
-      <div id="loginPanel">
-        <div class="field">
-          <label>Email</label>
-          <input id="loginEmail" type="email" placeholder="ton@email.fr" />
-        </div>
-        <div class="field">
-          <label>Mot de passe</label>
-          <input id="loginPass" type="password" placeholder="••••••••" />
-        </div>
-        <div id="loginError" class="auth-error"></div>
-        <button class="auth-submit" onclick="doLogin()">Se connecter →</button>
-      </div>
+      .hero-head {
+        margin-bottom: 14px;
+      }
 
-      <div id="signupPanel" style="display:none">
-        <div class="field">
-          <label>Prénom</label>
-          <input id="signupName" type="text" placeholder="Ton prénom" />
-        </div>
-        <div class="field">
-          <label>Âge</label>
-          <input id="signupAge" type="number" min="18" max="99" placeholder="18+" />
-        </div>
-        <div class="field">
-          <label>Email</label>
-          <input id="signupEmail" type="email" placeholder="ton@email.fr" />
-        </div>
-        <div class="field">
-          <label>Mot de passe</label>
-          <input id="signupPass" type="password" placeholder="8 caractères minimum" />
-        </div>
-        <div id="signupError" class="auth-error"></div>
-        <button class="auth-submit" onclick="doSignup()">Créer mon compte →</button>
-      </div>
+      .eyebrow {
+        color: var(--muted);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: 0.64rem;
+      }
 
-      <div class="auth-note">En continuant tu confirmes avoir 18 ans ou plus et accepter nos CGU.</div>
-    </div>
-  </div>
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 8px 12px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--line);
+        font-size: 0.72rem;
+        color: var(--muted-2);
+      }
 
-  <div id="ageGate" class="ovl show">
-    <div class="modal">
-      <div class="modal-emoji">🔞</div>
-      <h2>Réservé aux adultes</h2>
-      <p>AURA est un service de rencontre entre adultes majeurs et consentants (18+).</p>
-      <div class="modal-actions">
-        <button class="primary-btn" onclick="passAge(true)">J’ai 18 ans ou plus</button>
-        <button class="line-btn" onclick="passAge(false)">J’ai moins de 18 ans</button>
-      </div>
-      <div class="modal-note">Vérification d’âge conforme · Strasbourg + Alsace</div>
-    </div>
-  </div>
+      .profile-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 28px;
+        min-height: 470px;
+        background:
+          linear-gradient(180deg, rgba(9, 7, 13, 0.14), rgba(9, 7, 13, 0.72)),
+          url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80') center/cover no-repeat;
+        border: 1px solid rgba(255,255,255,0.1);
+        display: flex;
+        align-items: end;
+      }
 
-  <div class="app-shell" id="appShell">
-    <header class="topbar">
-      <button class="ibtn" aria-label="menu">☰</button>
-      <div class="brand"><span class="brand-mark"></span><b>AURA</b></div>
-      <div class="spacer"></div>
-      <button class="ibtn" aria-label="notifications">
-        🔔
-        <span class="dotbadge">3</span>
-      </button>
-    </header>
+      .profile-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 28%, rgba(8, 4, 14, 0.66) 100%);
+      }
 
-    <div class="cats" id="cats"></div>
+      .card-content {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        padding: 20px 18px 18px;
+      }
 
-    <main class="views">
-      <section class="view active" id="view-grid">
-        <div class="grid-head"><span class="gpulse"></span><span id="gridCount">0 profils proches</span></div>
-        <div id="grid" class="pgrid"></div>
-      </section>
+      .meta-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
 
-      <section class="view" id="view-likes">
-        <div class="likes-wrap">
-          <div class="likes-head">
-            <h2>Mes likes</h2>
-            <p>Tu as 12 personnes qui t’ont déjà apprécié.</p>
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.17);
+        border: 1px solid rgba(255,255,255,0.16);
+        font-size: 0.68rem;
+        color: var(--text);
+        backdrop-filter: blur(8px);
+      }
+
+      .name {
+        font-family: var(--fd);
+        font-size: clamp(2rem, 7vw, 2.7rem);
+        line-height: 1;
+        margin: 0;
+        letter-spacing: -0.06em;
+      }
+
+      .subline {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+        color: rgba(255,255,255,0.8);
+        font-size: 0.87rem;
+      }
+
+      .dot {
+        width: 7px;
+        height: 7px;
+        background: var(--green);
+        border-radius: 50%;
+        box-shadow: 0 0 8px rgba(72, 215, 167, 0.75);
+      }
+
+      .tag-row {
+        margin-top: 18px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .tag {
+        padding: 8px 10px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        color: var(--muted-2);
+        font-size: 0.72rem;
+      }
+
+      .action-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .action-btn {
+        min-height: 62px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.04);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text);
+        font-size: 1.1rem;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+      }
+
+      .action-btn:active {
+        transform: scale(0.96);
+      }
+
+      .action-btn.pass { background: rgba(255,87,104,0.08); border-color: rgba(255,87,104,0.26); }
+      .action-btn.like { background: linear-gradient(135deg, rgba(255, 77, 109, 0.28), rgba(255,138,91,0.18)); border-color: rgba(255,138,91,0.28); }
+      .action-btn.boost { background: rgba(104,196,255,0.08); border-color: rgba(104,196,255,0.25); }
+
+      .section {
+        margin-top: 20px;
+      }
+
+      .section-head {
+        margin: 0 8px 12px;
+      }
+
+      .section-title {
+        margin: 0;
+        font-family: var(--fd);
+        font-size: 1.15rem;
+        letter-spacing: -0.05em;
+      }
+
+      .section-link {
+        color: var(--muted-2);
+        font-size: 0.74rem;
+      }
+
+      .grid-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .mini-card {
+        position: relative;
+        border-radius: 22px;
+        overflow: hidden;
+        min-height: 180px;
+        border: 1px solid var(--line);
+        background-size: cover;
+        background-position: center;
+        padding: 12px;
+        display: flex;
+        align-items: end;
+        box-shadow: inset 0 -60px 40px rgba(0,0,0,0.26);
+      }
+
+      .mini-card h4 {
+        margin: 0;
+        font-family: var(--fd);
+        font-size: 1.15rem;
+        letter-spacing: -0.05em;
+      }
+
+      .mini-card .meta {
+        font-size: 0.7rem;
+        opacity: 0.9;
+      }
+
+      .likes-stack,
+      .chat-list,
+      .profile-stats,
+      .preferences {
+        display: grid;
+        gap: 12px;
+      }
+
+      .match-row,
+      .chat-item,
+      .stat-item,
+      .pref-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 18px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--line);
+      }
+
+      .avatar,
+      .chat-avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, rgba(255, 77, 109, 0.9), rgba(140, 91, 255, 0.9));
+        background-size: cover;
+        background-position: center;
+        flex: none;
+      }
+
+      .match-row strong,
+      .chat-item strong,
+      .pref-item strong,
+      .stat-item strong {
+        display: block;
+        font-size: 0.96rem;
+      }
+
+      .sub {
+        display: block;
+        color: var(--muted);
+        font-size: 0.72rem;
+        margin-top: 2px;
+      }
+
+      .match-badge {
+        margin-left: auto;
+        min-width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(255, 77, 109, 0.18), rgba(255, 138, 91, 0.14));
+        border: 1px solid rgba(255, 138, 91, 0.2);
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .chat-item {
+        cursor: pointer;
+      }
+
+      .chat-time {
+        margin-left: auto;
+        color: var(--muted);
+        font-size: 0.68rem;
+      }
+
+      .profile-card-full {
+        padding: 18px;
+      }
+
+      .profile-hero {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+
+      .profile-avatar {
+        width: 82px;
+        height: 82px;
+        border-radius: 24px;
+        background: url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80') center/cover no-repeat;
+        border: 1px solid rgba(255,255,255,0.12);
+      }
+
+      .profile-name {
+        margin: 0;
+        font-family: var(--fd);
+        font-size: 2rem;
+        letter-spacing: -0.06em;
+      }
+
+      .profile-line {
+        margin-bottom: 18px;
+      }
+
+      .bio {
+        margin: 0 0 18px;
+        line-height: 1.7;
+        color: var(--muted-2);
+        font-size: 0.9rem;
+      }
+
+      .stat-item {
+        justify-content: space-between;
+      }
+
+      .stat-item .count {
+        font-size: 1.15rem;
+        font-weight: 700;
+      }
+
+      .preferences {
+        margin-top: 16px;
+      }
+
+      .pref-item {
+        justify-content: space-between;
+      }
+
+      .pill-primary {
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: rgba(255, 77, 109, 0.14);
+        border: 1px solid rgba(255, 77, 109, 0.2);
+        color: #ffdbe3;
+        font-size: 0.7rem;
+      }
+
+      .bottom-nav {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: var(--nav-h);
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+        padding: 8px 10px calc(8px + var(--safe-bottom));
+        background: rgba(10, 7, 15, 0.92);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-top: 1px solid var(--line);
+      }
+
+      .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        border-radius: 14px;
+        color: var(--muted);
+        font-size: 0.72rem;
+      }
+
+      .nav-item.active {
+        color: var(--text);
+        background: rgba(255,255,255,0.04);
+      }
+
+      .nav-item .nav-icon {
+        font-size: 1.08rem;
+      }
+
+      .toast {
+        position: absolute;
+        left: 50%;
+        bottom: calc(var(--nav-h) + 18px);
+        transform: translateX(-50%) translateY(16px);
+        min-width: 180px;
+        text-align: center;
+        padding: 12px 16px;
+        border-radius: 999px;
+        background: rgba(18, 12, 24, 0.9);
+        border: 1px solid var(--line);
+        color: var(--text);
+        letter-spacing: 0.02em;
+        box-shadow: var(--shadow);
+        opacity: 0;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      @media (max-width: 420px) {
+        .app-shell { width: 100%; }
+        .profile-card { min-height: 420px; }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="bg"></canvas>
+
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand"><span class="brand-mark"></span> AURA</div>
+        <div class="header-meta">Strasbourg</div>
+        <button class="icon-ghost" aria-label="Paramètres">⚙️</button>
+      </header>
+
+      <main class="screen-stack">
+        <section class="screen active" id="discover">
+          <div class="hero panel">
+            <div class="hero-head">
+              <span class="eyebrow">Découvrir</span>
+              <button class="chip">⚙️ Filtres</button>
+            </div>
+
+            <div class="profile-card" aria-label="Profil recommandé">
+              <div class="card-content">
+                <div class="meta-row">
+                  <span class="pill">🔥 96% match</span>
+                  <span class="pill">🎧 Music lover</span>
+                </div>
+
+                <h2 class="name">Élodie</h2>
+                <div class="subline"><span>28 ans</span><span>•</span><span>Strasbourg</span><span class="dot"></span><span>En ligne</span></div>
+
+                <div class="tag-row">
+                  <span class="tag">Voyage</span>
+                  <span class="tag">Art</span>
+                  <span class="tag">Running</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="action-row">
+              <button class="action-btn pass" aria-label="Passer">✕</button>
+              <button class="action-btn like" aria-label="Aimer">♥</button>
+              <button class="action-btn boost" aria-label="Boost">✨</button>
+            </div>
           </div>
-          <div id="likesGrid" class="likes-grid"></div>
-        </div>
-      </section>
 
-      <section class="view" id="view-msgs">
-        <div class="likes-wrap">
-          <div class="likes-head">
-            <h2>Messages</h2>
-            <p>Conversations actives près de Strasbourg.</p>
-          </div>
-          <div id="convos" class="messages-list"></div>
-        </div>
-      </section>
+          <div class="section">
+            <div class="section-head">
+              <h3 class="section-title">Les plus proches</h3>
+              <a href="#" class="section-link">Voir tout</a>
+            </div>
 
-      <section class="view" id="view-coach">
-        <div class="coach-wrap">
-          <div class="coach-head">
-            <h2>Coach Love IA</h2>
-            <p>Des idées de messages, relances et dates selon tes profils.</p>
+            <div class="grid-list">
+              <div class="mini-card" style="background-image: linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.34)), url('https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=800&q=80');">
+                <div>
+                  <h4>Lina</h4>
+                  <div class="meta">24 ans · 2 km</div>
+                </div>
+              </div>
+              <div class="mini-card" style="background-image: linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.34)), url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80');">
+                <div>
+                  <h4>Chloé</h4>
+                  <div class="meta">27 ans · 4 km</div>
+                </div>
+              </div>
+              <div class="mini-card" style="background-image: linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.34)), url('https://images.unsplash.com/photo-1521119989659-a83eee488004?auto=format&fit=crop&w=800&q=80');">
+                <div>
+                  <h4>Camille</h4>
+                  <div class="meta">29 ans · 5 km</div>
+                </div>
+              </div>
+              <div class="mini-card" style="background-image: linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.34)), url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80');">
+                <div>
+                  <h4>Lucas</h4>
+                  <div class="meta">31 ans · 6 km</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="coach-chat" id="coachChat"></div>
-          <div class="coach-quick">
-            <button class="qbtn">Ouvrir l’album</button>
-            <button class="qbtn">Relancer</button>
-            <button class="qbtn">Idée de date</button>
-          </div>
-          <div class="coach-composer">
-            <input id="coachInput" placeholder="Demander une ouverture..." />
-            <button onclick="sendCoachMessage()">➤</button>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="view" id="view-shop">
-        <div class="shop-wrap">
-          <div class="shop-head">
-            <h2>Forfaits</h2>
-            <p>Accède à plus de profils, sans compromis.</p>
+        <section class="screen" id="likes">
+          <div class="section-head" style="margin: 8px 0 18px;">
+            <h3 class="section-title">Vos likes</h3>
+            <span class="chip">12 nouveaux</span>
           </div>
-          <div id="plansBox" class="shop-plan"></div>
-        </div>
-      </section>
 
-      <section class="view" id="view-profile">
-        <div class="profile-wrap">
-          <div class="profile-head">
-            <h2>Profil</h2>
-            <p>Personnalise ton expérience et ton niveau de confidentialité.</p>
+          <div class="likes-stack">
+            <div class="match-row panel">
+              <div class="avatar" style="background-image: url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=500&q=80');"></div>
+              <div>
+                <strong>Élodie</strong>
+                <span class="sub">Match fort · 96%</span>
+              </div>
+              <div class="match-badge">♥</div>
+            </div>
+
+            <div class="match-row panel">
+              <div class="avatar" style="background-image: url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=500&q=80');"></div>
+              <div>
+                <strong>Sarah</strong>
+                <span class="sub">Conversation active</span>
+              </div>
+              <div class="match-badge">9</div>
+            </div>
+
+            <div class="match-row panel">
+              <div class="avatar" style="background-image: url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=500&q=80');"></div>
+              <div>
+                <strong>Lucie</strong>
+                <span class="sub">Très compatible</span>
+              </div>
+              <div class="match-badge">❤</div>
+            </div>
           </div>
-          <div class="settings" id="settingsBox"></div>
-        </div>
-      </section>
-    </main>
+        </section>
 
-    <nav class="bnav" aria-label="Navigation">
-      <div class="bnav-inner">
-        <button class="nav-item active" data-view="view-grid">
-          <span class="orb">💫</span>
+        <section class="screen" id="messages">
+          <div class="chat-head" style="margin: 8px 0 18px;">
+            <h3 class="section-title">Messages</h3>
+            <button class="chip">+ Nouveau</button>
+          </div>
+
+          <div class="chat-list">
+            <div class="chat-item panel">
+              <div class="chat-avatar" style="background-image: url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=500&q=80');"></div>
+              <div>
+                <strong>Élodie</strong>
+                <span class="sub">On se voit ce soir ?</span>
+              </div>
+              <div class="chat-time">2m</div>
+            </div>
+
+            <div class="chat-item panel">
+              <div class="chat-avatar" style="background-image: url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=500&q=80');"></div>
+              <div>
+                <strong>Sarah</strong>
+                <span class="sub">Tu as vu le café de la place?</span>
+              </div>
+              <div class="chat-time">18m</div>
+            </div>
+
+            <div class="chat-item panel">
+              <div class="chat-avatar" style="background-image: url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=500&q=80');"></div>
+              <div>
+                <strong>Lucie</strong>
+                <span class="sub">On pourrait aller à l’atelier</span>
+              </div>
+              <div class="chat-time">1h</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="profile">
+          <div class="profile-card-full panel">
+            <div class="profile-hero">
+              <div class="profile-avatar"></div>
+              <div>
+                <h2 class="profile-name">Mila</h2>
+                <div class="subline"><span>29 ans</span><span>•</span><span>Strasbourg</span></div>
+              </div>
+            </div>
+
+            <div class="profile-line">
+              <span class="chip">Premium</span>
+              <button class="chip">Modifier</button>
+            </div>
+
+            <p class="bio">
+              Passionnée de design, de vieilles rues et de bonnes adresses. J’aime les sorties culturelles, les cocktails et les longues balades au bord de l’Ill.
+            </p>
+
+            <div class="profile-stats">
+              <div class="stat-item panel">
+                <span>Likes</span>
+                <span class="count">128</span>
+              </div>
+              <div class="stat-item panel">
+                <span>Matches</span>
+                <span class="count">14</span>
+              </div>
+              <div class="stat-item panel">
+                <span>Visites</span>
+                <span class="count">1.2k</span>
+              </div>
+            </div>
+
+            <div class="preferences">
+              <div class="pref-item">
+                <div>
+                  <strong>Ce que je cherche</strong>
+                  <span class="sub">Relations sérieuses, ambiance fun</span>
+                </div>
+                <span class="pill-primary">Love</span>
+              </div>
+
+              <div class="pref-item">
+                <div>
+                  <strong>Disponible</strong>
+                  <span class="sub">Soir et week-end</span>
+                </div>
+                <span class="pill-primary">Oui</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" aria-label="Navigation principale">
+        <button class="nav-item active" data-screen="discover">
+          <span class="nav-icon">⌂</span>
           <span>Découvrir</span>
         </button>
-        <button class="nav-item" data-view="view-likes">
-          <span class="orb">♥</span>
+        <button class="nav-item" data-screen="likes">
+          <span class="nav-icon">♥</span>
           <span>Likes</span>
         </button>
-        <button class="nav-item" data-view="view-msgs">
-          <span class="orb">💬</span>
+        <button class="nav-item" data-screen="messages">
+          <span class="nav-icon">✉</span>
           <span>Messages</span>
-          <span class="badge show">2</span>
         </button>
-        <button class="nav-item" data-view="view-coach">
-          <span class="orb">🤖</span>
-          <span>Coach</span>
-        </button>
-        <button class="nav-item" data-view="view-profile">
-          <span class="orb">⚙</span>
+        <button class="nav-item" data-screen="profile">
+          <span class="nav-icon">◉</span>
           <span>Profil</span>
         </button>
-      </div>
-    </nav>
-  </div>
+      </nav>
 
-  <div id="profileSheet" class="profile-sheet" aria-hidden="true">
-    <div class="sheet">
-      <button class="sheet-close" onclick="closeProfileSheet()">✕</button>
-      <div class="sheet-media">
-        <img id="sheetImage" src="" alt="Profil" />
-        <div class="sheet-top">
-          <span class="pill" id="sheetDistance">À 3 km</span>
-          <span class="pill" id="sheetType">Nouveau</span>
-        </div>
-      </div>
-      <div class="sheet-body">
-        <div class="sheet-name">
-          <h3 id="sheetName">—</h3>
-          <span class="sheet-age" id="sheetAge">—</span>
-        </div>
-        <div class="meta-row" id="sheetMeta"></div>
-        <div id="sheetBio" class="sheet-bio"></div>
-
-        <div class="stats-row">
-          <div class="stat-box"><b id="statMatch">92%</b><span>Compat.</span></div>
-          <div class="stat-box"><b id="statAge">26</b><span>Âge</span></div>
-          <div class="stat-box"><b id="statCity">Stras</b><span>Ville</span></div>
-        </div>
-
-        <div class="social-box" id="socialBox">
-          <h4>Réseaux</h4>
-          <div class="social-links">
-            <a href="#" class="slink">Instagram · @mila_alsace</a>
-            <a href="#" class="slink">TikTok · @mila.paris</a>
-            <a href="#" class="slink">Spotify · playlist city</a>
-          </div>
-        </div>
-
-        <div class="action-row">
-          <button class="reject" onclick="closeProfileSheet()">Passer</button>
-          <button class="like" onclick="likeSelectedProfile()">Aimer</button>
-          <button class="message" onclick="openChatFromCard()">Message</button>
-        </div>
-      </div>
+      <div class="toast" id="toast">Match envoyé !</div>
     </div>
-  </div>
 
-  <div id="chatScreen" class="screen" aria-hidden="true">
-    <div class="chat-window">
-      <div class="chat-head">
-        <div class="chat-avatar" id="chatAvatar">M</div>
-        <div style="flex:1; min-width:0;">
-          <div class="chat-name" id="chatName">—</div>
-          <div class="chat-sub" id="chatSub">en ligne</div>
-        </div>
-        <button class="chat-close" onclick="closeChat()">✕</button>
-      </div>
-      <div class="chat-scroll" id="chatScroll"></div>
-      <div class="chat-composer">
-        <input id="chatInput" type="text" placeholder="Écris un message..." />
-        <button class="send-btn" onclick="sendChatMessage()">➤</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="matchModal" class="ovl">
-    <div class="modal">
-      <div class="modal-emoji">💘</div>
-      <h2>C’est un match !</h2>
-      <p><span id="matchName">—</span> a aussi liké ton profil.</p>
-      <div class="modal-actions">
-        <button class="primary-btn" onclick="hideOv('matchModal'); openChatFromMatch();">Envoyer un message</button>
-        <button class="line-btn" onclick="hideOv('matchModal')">Continuer</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="payModal" class="ovl">
-    <div class="modal">
-      <div class="modal-emoji">🔒</div>
-      <h2>Fonction AURA+</h2>
-      <p>Active AURA+ pour débloquer les réseaux, le coach IA et les profils premium.</p>
-      <div class="modal-actions">
-        <button class="primary-btn" onclick="hideOv('payModal'); toast('AURA+ activé — 12,99 €/mois');">Activer AURA+ · 12,99 €</button>
-        <button class="line-btn" onclick="hideOv('payModal')">Plus tard</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="toast" id="toast"></div>
-
-  <script>
-    const profiles = [
-      { id: 1, name: 'Clara', age: 26, city: 'Strasbourg', distance: 2, vibe: 'Végane', orientation: 'Hétéro', bio: 'Amoureuse des terrasses de la Petite France et des soirées jazz en ville.', tags: ['Jazz', 'Vélo', 'Café'], image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80', online: true, match: 94 },
-      { id: 2, name: 'Nicolas', age: 30, city: 'Schiltigheim', distance: 5, vibe: 'Sportif', orientation: 'Gay', bio: 'Course le matin, bons plans à la carte et décompression en terrasse.', tags: ['Sport', 'Cuisine', 'Ciné'], image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80', online: true, match: 90 },
-      { id: 3, name: 'Lina', age: 24, city: 'Illkirch', distance: 7, vibe: 'Créative', orientation: 'Bi', bio: 'Je cherche une belle complicité, des conversations et un peu d’aventure.', tags: ['Art', 'Mode', 'Roadtrip'], image: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=900&q=80', online: false, match: 96 },
-      { id: 4, name: 'Hugo', age: 28, city: 'Strasbourg', distance: 3, vibe: 'Doux', orientation: 'Hétéro', bio: 'Je suis plutôt du genre 🍷, randonnée, et plans spontanés le week-end.', tags: ['Vin', 'Hiking', 'Photo'], image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=900&q=80', online: true, match: 88 },
-      { id: 5, name: 'Amélie', age: 27, city: 'Hœnheim', distance: 9, vibe: 'Calme', orientation: 'Femme', bio: 'J’aime les longues soirées, les bons plans culturels et une vraie connexion.', tags: ['Culture', 'Brunch', 'Nature'], image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80', online: true, match: 92 },
-      { id: 6, name: 'Yanis', age: 29, city: 'Strasbourg', distance: 1, vibe: 'Sérénité', orientation: 'Hétéro', bio: 'Passionné par le design, les balades et les conversations profondes.', tags: ['Design', 'Moto', 'Musiques'], image: 'https://images.unsplash.com/photo-1504593811423-6dd665756598?auto=format&fit=crop&w=900&q=80', online: false, match: 89 },
-      { id: 7, name: 'Sofia', age: 25, city: 'Kilstett', distance: 12, vibe: 'Aventure', orientation: 'Lesbienne', bio: 'Si on se rencontre, on peut partir à l’aventure autour de Strasbourg et plus loin.', tags: ['Voyage', 'Cinéma', 'Cuisine'], image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80', online: true, match: 97 },
-      { id: 8, name: 'Milo', age: 31, city: 'Strasbourg', distance: 2, vibe: 'Dynamique', orientation: 'Hétéro', bio: 'Je suis plutôt du genre bon vivant, musique live et escapes en ville.', tags: ['Live', 'Drinks', 'Tech'], image: 'https://images.unsplash.com/photo-1504593811423-6dd665756598?auto=format&fit=crop&w=900&q=80', online: true, match: 91 },
-      { id: 9, name: 'Eva', age: 23, city: 'Lingolsheim', distance: 6, vibe: 'Joyeuse', orientation: 'Hétéro', bio: 'J’aime une bonne énergie, les balades et les rencontres sans pression.', tags: ['Balades', 'Brunch', 'Art'], image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80', online: false, match: 93 },
-      { id: 10, name: 'Paul', age: 32, city: 'Strasbourg', distance: 4, vibe: 'Fiable', orientation: 'Hétéro', bio: 'À la recherche d’une connexion sincère, au moins autant qu’un bon week-end.', tags: ['Running', 'Miam', 'Trottoir'], image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=900&q=80', online: true, match: 86 },
-      { id: 11, name: 'Chloé', age: 27, city: 'Strasbourg', distance: 3, vibe: 'Flirt', orientation: 'Bi', bio: 'Tendresse, humour et un peu d’adrénaline : c’est ma formule idéale.', tags: ['Voyage', 'Jardin', 'Mode'], image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=900&q=80', online: true, match: 95 },
-      { id: 12, name: 'Martin', age: 34, city: 'Bischheim', distance: 8, vibe: 'Cool', orientation: 'Hétéro', bio: 'L’union parfaite entre les bons plans, le calme et les conversations faciles.', tags: ['Musiques', 'Café', 'Cuisine'], image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80', online: false, match: 90 }
-    ];
-
-    const categories = ['Tout', 'Proche', 'Nouvelle', 'À l’intérieur', 'Strasbourg', 'Femmes', 'Hommes', 'Bi'];
-    const likes = [
-      { id: 7, name: 'Sofia', age: 25, city: 'Kilstett', image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80' },
-      { id: 1, name: 'Clara', age: 26, city: 'Strasbourg', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80' },
-      { id: 5, name: 'Amélie', age: 27, city: 'Hœnheim', image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80' },
-      { id: 11, name: 'Chloé', age: 27, city: 'Strasbourg', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=900&q=80' }
-    ];
-
-    const conversations = [
-      { id: 1, name: 'Clara', avatar: 'C', last: 'Tu viens ce soir au bar ?', time: '2 min', unread: 2 },
-      { id: 11, name: 'Chloé', avatar: 'C', last: 'J’ai vu un endroit super à Strasbourg', time: '14 min', unread: 1 },
-      { id: 3, name: 'Lina', avatar: 'L', last: 'On peut se voir vendredi ?', time: '1h', unread: 0 },
-      { id: 7, name: 'Sofia', avatar: 'S', last: 'Le plan à Hœnheim est top', time: 'Hier', unread: 0 }
-    ];
-
-    const chatHistory = {
-      1: [{ type: 'in', text: 'Salut ! Tu veux qu’on fasse un petit tour dans le quartier ?' }, { type: 'out', text: 'Oui, ça me va ! J’aime bien le côté branché de Strasbourg.' }, { type: 'in', text: 'Parfait, je te propose un bar avec de la bonne musique.' }],
-      11: [{ type: 'in', text: 'Tu as vu le restaurant qu’on a mentionné ?' }, { type: 'out', text: 'Oui et j’ai déjà envie de réserver.' }, { type: 'in', text: 'Super, on peut y aller ce week-end.' }],
-      3: [{ type: 'in', text: 'Tu préfères plutôt un plan tranquille ou un peu plus vivant ?' }, { type: 'out', text: 'J’aime bien un mélange des deux.' }],
-      7: [{ type: 'in', text: 'Salut ! J’ai repéré un atelier sympa ce week-end.' }, { type: 'out', text: 'Ça a l’air génial, tu me dis l’adresse.' }]
-    };
-
-    const state = {
-      selectedCategory: 'Tout',
-      activeView: 'view-grid',
-      selectedProfile: null,
-      activeChat: null,
-      ageOK: localStorage.getItem('aura_age_ok') === '1'
-    };
-
-    function showToast(message) {
+    <script>
+      const navItems = document.querySelectorAll('.nav-item');
+      const screens = document.querySelectorAll('.screen');
       const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.classList.add('show');
-      clearTimeout(showToast.timer);
-      showToast.timer = setTimeout(() => toast.classList.remove('show'), 2200);
-    }
 
-    function openAuthScreen() {
-      document.getElementById('authScreen').classList.add('show');
-      document.getElementById('appShell').classList.remove('show');
-    }
-
-    function closeAuthScreen() {
-      document.getElementById('authScreen').classList.remove('show');
-      document.getElementById('appShell').classList.add('show');
-    }
-
-    function passAge(ok) {
-      const ageGate = document.getElementById('ageGate');
-      if (ok) {
-        localStorage.setItem('aura_age_ok', '1');
-        state.ageOK = true;
-        ageGate.classList.remove('show');
-        closeAuthScreen();
-      } else {
-        ageGate.innerHTML = `
-          <div class="modal">
-            <div class="modal-emoji">🚫</div>
-            <h2>Accès refusé</h2>
-            <p>Ce service est réservé aux adultes majeurs. Reviens quand tu auras 18 ans.</p>
-            <div class="modal-actions">
-              <button class="primary-btn" onclick="window.location.href='index.html'">Retour accueil</button>
-            </div>
-          </div>
-        `;
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(window.toastTimer);
+        window.toastTimer = setTimeout(() => toast.classList.remove('show'), 1500);
       }
-    }
 
-    function initBackground() {
+      navItems.forEach((button) => {
+        button.addEventListener('click', () => {
+          const target = button.dataset.screen;
+          navItems.forEach((item) => item.classList.toggle('active', item === button));
+          screens.forEach((screen) => screen.classList.toggle('active', screen.id === target));
+        });
+      });
+
+      document.querySelector('.action-btn.like').addEventListener('click', () => showToast('Match envoyé !'));
+      document.querySelector('.action-btn.pass').addEventListener('click', () => showToast('Profil ignoré'));
+      document.querySelector('.action-btn.boost').addEventListener('click', () => showToast('Boost activé'));
+
       const canvas = document.getElementById('bg');
       const ctx = canvas.getContext('2d');
-      let w = 0, h = 0, particles = [];
+      let w = 0, h = 0;
+      const particles = [];
 
-      function resize() {
-        const ratio = Math.min(window.devicePixelRatio || 1, 2);
-        w = Math.floor(window.innerWidth * ratio);
-        h = Math.floor(window.innerHeight * ratio);
-        canvas.width = w;
-        canvas.height = h;
+      function resizeCanvas() {
+        const ratio = window.devicePixelRatio || 1;
+        w = canvas.width = window.innerWidth * ratio;
+        h = canvas.height = window.innerHeight * ratio;
         canvas.style.width = window.innerWidth + 'px';
         canvas.style.height = window.innerHeight + 'px';
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
       }
 
-      function buildParticles() {
-        particles = Array.from({ length: 52 }, () => ({
-          x: Math.random(),
-          y: Math.random(),
-          r: Math.random() * 2.1 + 0.6,
-          vx: (Math.random() - 0.5) * 0.0008,
-          vy: (Math.random() - 0.5) * 0.0008,
-          a: Math.random() * 0.45 + 0.15
-        }));
+      function createParticles() {
+        particles.length = 0;
+        const count = 22;
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            r: Math.random() * 120 + 80,
+            alpha: Math.random() * 0.12 + 0.06,
+            speed: Math.random() * 0.3 + 0.1
+          });
+        }
       }
 
-      resize();
-      buildParticles();
-      window.addEventListener('resize', () => { resize(); buildParticles(); });
-
-      const blobs = [
-        [0.22, 0.18, '#ff4d6d'],
-        [0.78, 0.16, '#7c3aed'],
-        [0.54, 0.86, '#4ea8ff'],
-        [0.18, 0.72, '#ff8a5b']
-      ];
-      let t = 0;
-      function frame() {
-        t += 0.008;
-        ctx.clearRect(0, 0, w, h);
-
-        blobs.forEach(([bx, by, c], i) => {
-          const x = (bx + Math.sin(t + i * 1.2) * 0.08) * w;
-          const y = (by + Math.cos(t * 0.8 + i) * 0.08) * h;
-          const g = ctx.createRadialGradient(x, y, 0, x, y, w * 0.5);
-          g.addColorStop(0, c + '7a');
-          g.addColorStop(1, 'transparent');
+      function drawBackground() {
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        particles.forEach((p, i) => {
+          p.y += p.speed;
+          if (p.y > window.innerHeight + p.r) p.y = -p.r;
+          const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+          const color = i % 3 === 0 ? 'rgba(255,77,109,0.18)' : i % 3 === 1 ? 'rgba(140,91,255,0.15)' : 'rgba(104,196,255,0.14)';
+          g.addColorStop(0, color);
+          g.addColorStop(1, 'rgba(0,0,0,0)');
           ctx.fillStyle = g;
-          ctx.fillRect(0, 0, w, h);
+          ctx.fillRect(p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
         });
-
-        ctx.fillStyle = 'rgba(255,255,255,.55)';
-        particles.forEach(p => {
-          p.x += p.vx;
-          p.y += p.vy;
-          if (p.x < 0 || p.x > 1) p.vx *= -1;
-          if (p.y < 0 || p.y > 1) p.vy *= -1;
-          ctx.globalAlpha = p.a;
-          ctx.beginPath();
-          ctx.arc(p.x * w, p.y * h, p.r * (window.devicePixelRatio || 1), 0, Math.PI * 2);
-          ctx.fill();
-        });
-        ctx.globalAlpha = 1;
-        requestAnimationFrame(frame);
-      }
-      requestAnimationFrame(frame);
-    }
-
-    function renderCategories() {
-      const cats = document.getElementById('cats');
-      cats.innerHTML = categories.map(cat => `
-        <button class="cat ${cat === state.selectedCategory ? 'active' : ''}" data-cat="${cat}">${cat}</button>
-      `).join('');
-
-      cats.querySelectorAll('.cat').forEach(btn => {
-        btn.addEventListener('click', () => {
-          state.selectedCategory = btn.dataset.cat;
-          renderCategories();
-          renderGrid();
-        });
-      });
-    }
-
-    function renderGrid() {
-      const list = profiles.filter(profile => {
-        if (state.selectedCategory === 'Tout') return true;
-        if (state.selectedCategory === 'Proche') return profile.distance <= 5;
-        if (state.selectedCategory === 'Nouvelle') return profile.age <= 27;
-        if (state.selectedCategory === 'À l’intérieur') return profile.city === 'Strasbourg';
-        if (state.selectedCategory === 'Strasbourg') return profile.city === 'Strasbourg';
-        if (state.selectedCategory === 'Femmes') return profile.orientation === 'Femme' || profile.name === 'Clara' || profile.name === 'Amélie' || profile.name === 'Lina';
-        if (state.selectedCategory === 'Hommes') return profile.orientation === 'Gay' || profile.name === 'Nicolas' || profile.name === 'Hugo' || profile.name === 'Yanis';
-        if (state.selectedCategory === 'Bi') return profile.orientation === 'Bi';
-        return true;
-      });
-
-      const grid = document.getElementById('grid');
-      grid.innerHTML = list.map((p, i) => `
-        <div class="tile" data-id="${p.id}" style="animation-delay:${i * 25}ms;">
-          <img class="tile-img" src="${p.image}" alt="${p.name}" />
-          <span class="tile-badge ${p.match > 93 ? 'new' : 'orient'}">${p.match > 93 ? 'New' : 'match'}</span>
-          <div class="tile-line">
-            <span class="t-dot"></span>
-            <span class="t-name">${p.name}, ${p.age}</span>
-          </div>
-        </div>
-      `).join('');
-
-      document.getElementById('gridCount').textContent = `${list.length} profils proches`;
-
-      grid.querySelectorAll('.tile').forEach(tile => {
-        tile.addEventListener('click', () => {
-          const id = Number(tile.dataset.id);
-          openProfile(id);
-        });
-      });
-    }
-
-    function openProfile(id) {
-      const profile = profiles.find(p => p.id === id);
-      if (!profile) return;
-      state.selectedProfile = profile;
-
-      document.getElementById('sheetImage').src = profile.image;
-      document.getElementById('sheetName').textContent = profile.name;
-      document.getElementById('sheetAge').textContent = profile.age;
-      document.getElementById('sheetDistance').textContent = `À ${profile.distance} km`;
-      document.getElementById('sheetType').textContent = profile.online ? 'En ligne' : 'Récemment';
-      document.getElementById('sheetBio').textContent = profile.bio;
-      document.getElementById('sheetMeta').innerHTML = `
-        <span class="meta-pill">${profile.city}</span>
-        <span class="meta-pill orient">${profile.orientation}</span>
-        <span class="meta-pill">${profile.vibe}</span>
-      `;
-
-      document.getElementById('statMatch').textContent = `${profile.match}%`;
-      document.getElementById('statAge').textContent = profile.age;
-      document.getElementById('statCity').textContent = profile.city.slice(0, 5);
-
-      const socialBox = document.getElementById('socialBox');
-      if (profile.match > 90) {
-        socialBox.classList.remove('social-locked');
-      } else {
-        socialBox.classList.add('social-locked');
+        requestAnimationFrame(drawBackground);
       }
 
-      document.getElementById('profileSheet').classList.add('show');
-      document.getElementById('profileSheet').setAttribute('aria-hidden', 'false');
-    }
-
-    function closeProfileSheet() {
-      document.getElementById('profileSheet').classList.remove('show');
-      document.getElementById('profileSheet').setAttribute('aria-hidden', 'true');
-    }
-
-    function likeSelectedProfile() {
-      if (!state.selectedProfile) return;
-      const name = state.selectedProfile.name;
-      const liked = likes.some(item => item.id === state.selectedProfile.id);
-      if (!liked) likes.unshift({ id: state.selectedProfile.id, name: name, age: state.selectedProfile.age, city: state.selectedProfile.city, image: state.selectedProfile.image });
-      closeProfileSheet();
-      renderLikes();
-      showToast(`${name} ajouté à tes likes`);
-      if (Math.random() > 0.5) {
-        document.getElementById('matchName').textContent = name;
-        showModal('matchModal');
-      }
-    }
-
-    function showModal(id) {
-      document.getElementById(id).classList.add('show');
-    }
-
-    function hideOv(id) {
-      document.getElementById(id).classList.remove('show');
-    }
-
-    function renderLikes() {
-      const likesGrid = document.getElementById('likesGrid');
-      likesGrid.innerHTML = likes.map(profile => `
-        <div class="like-card" data-id="${profile.id}" onclick="openProfile(${profile.id})">
-          <img src="${profile.image}" alt="${profile.name}" />
-          <div class="like-heart">♥</div>
-          <div class="like-info">
-            <div class="like-name">${profile.name}</div>
-            <div class="like-meta"><span>${profile.age}</span><span>•</span><span>${profile.city}</span></div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function renderConversations() {
-      const list = document.getElementById('convos');
-      list.innerHTML = conversations.map(convo => `
-        <button class="convo" data-id="${convo.id}" onclick="openChat(${convo.id})">
-          <div class="convo-avatar">${convo.avatar}</div>
-          <div class="convo-body">
-            <div class="convo-top">
-              <div class="convo-name">${convo.name}</div>
-              <div class="convo-time">${convo.time}</div>
-            </div>
-            <div class="convo-last">${convo.last}</div>
-          </div>
-          ${convo.unread ? '<div class="convo-badge">' + convo.unread + '</div>' : ''}
-        </button>
-      `).join('');
-    }
-
-    function openChat(id) {
-      const profile = profiles.find(p => p.id === id) || likes.find(p => p.id === id);
-      if (!profile) return;
-      state.activeChat = id;
-      const chatScreen = document.getElementById('chatScreen');
-      document.getElementById('chatAvatar').textContent = profile.name.charAt(0);
-      document.getElementById('chatName').textContent = profile.name;
-      document.getElementById('chatSub').textContent = 'en ligne';
-      const chatScroll = document.getElementById('chatScroll');
-      chatScroll.innerHTML = (chatHistory[id] || []).map(msg => `
-        <div class="bubble ${msg.type === 'in' ? 'in' : 'out'}">${msg.text}</div>
-      `).join('');
-      chatScreen.classList.add('show');
-      chatScroll.scrollTop = chatScroll.scrollHeight;
-    }
-
-    function closeChat() {
-      document.getElementById('chatScreen').classList.remove('show');
-    }
-
-    function sendChatMessage() {
-      const input = document.getElementById('chatInput');
-      const text = input.value.trim();
-      if (!text || !state.activeChat) return;
-      const chatScroll = document.getElementById('chatScroll');
-      const list = chatHistory[state.activeChat] || [];
-      list.push({ type: 'out', text });
-      chatHistory[state.activeChat] = list;
-      chatScroll.innerHTML = list.map(msg => `
-        <div class="bubble ${msg.type === 'in' ? 'in' : 'out'}">${msg.text}</div>
-      `).join('');
-      chatScroll.scrollTop = chatScroll.scrollHeight;
-      input.value = '';
-      showToast('Message envoyé');
-    }
-
-    function openChatFromCard() {
-      if (!state.selectedProfile) return;
-      openChat(state.selectedProfile.id);
-      closeProfileSheet();
-    }
-
-    function openChatFromMatch() {
-      if (!state.selectedProfile) return;
-      openChat(state.selectedProfile.id);
-    }
-
-    function renderPlans() {
-      const plansBox = document.getElementById('plansBox');
-      const plans = [
-        { name: 'Découverte', price: 0, tag: '', features: ['Jusqu’à 20 likes / jour', 'Filtre par ville', 'Messages de base'], highlight: false },
-        { name: 'AURA+', price: 12.99, tag: 'POPULAIRE', features: ['Réseaux sociaux débloqués', 'Coach Love IA', 'Profil premium', 'Likes illimités'], highlight: true },
-        { name: 'AURA Max', price: 24.99, tag: 'VIP', features: ['Priorité de visibilité', 'Match booster', 'Privilèges de modération', 'Boost de profil'], highlight: false }
-      ];
-      plansBox.innerHTML = plans.map((plan, idx) => `
-        <div class="plan-card ${plan.highlight ? 'best' : ''}">
-          ${plan.tag ? '<span class="tag">' + plan.tag + '</span>' : ''}
-          <div class="head">
-            <h3>${plan.name}</h3>
-            <div class="price-tag">${plan.price === 0 ? '0€' : plan.price + '€'}<span>/mois</span></div>
-          </div>
-          <ul>
-            ${plan.features.map(feature => '<li>' + feature + '</li>').join('')}
-          </ul>
-          <button class="buy" onclick="showPayModal()">${plan.price === 0 ? 'Essai gratuit' : 'Choisir ce plan'}</button>
-        </div>
-      `).join('');
-    }
-
-    function showPayModal() {
-      showModal('payModal');
-    }
-
-    function renderSettings() {
-      const settingsBox = document.getElementById('settingsBox');
-      settingsBox.innerHTML = `
-        <div class="profile-card">
-          <div class="avatar-block">
-            <div class="big-avatar">A</div>
-            <div>
-              <div style="font-family:var(--fd); font-size:1.4rem; font-weight:800; margin-bottom:4px;">Amandine</div>
-              <div style="color:var(--muted); font-size:12px;">Strasbourg · 26 ans</div>
-            </div>
-          </div>
-          <button class="avatar-btn">Changer la photo</button>
-        </div>
-
-        <div class="profile-card">
-          <div class="setting-row"><span>Mode incognito</span><span class="toggle on"></span></div>
-          <div class="setting-row"><span>Notifications</span><span class="toggle on"></span></div>
-          <div class="setting-row"><span>Visible à moins de 10 km</span><span class="toggle on"></span></div>
-          <div class="setting-row"><span>Se montrer uniquement aux personnes ayant le même centre d’intérêt</span><span class="toggle"></span></div>
-        </div>
-
-        <div class="profile-card">
-          <div class="setting-row"><span>Thème sombre</span><span class="toggle on"></span></div>
-          <div class="setting-row"><span>Mode discret</span><span class="toggle"></span></div>
-        </div>
-
-        <button class="save-btn" onclick="showToast('Paramètres enregistrés')">Enregistrer</button>
-      `;
-
-      settingsBox.querySelectorAll('.toggle').forEach(toggle => {
-        toggle.addEventListener('click', () => toggle.classList.toggle('on'));
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        createParticles();
       });
-    }
 
-    function renderCoach() {
-      const coachChat = document.getElementById('coachChat');
-      coachChat.innerHTML = `
-        <div class="coach-bubble">Salut ! Je peux t’aider à ouvrir le dialogue, relancer une conversation ou organiser une date autour de Strasbourg.</div>
-        <div class="coach-bubble user">J’aimerais une idée de premier message pour Clara.</div>
-        <div class="coach-bubble">Essaie : “Salut Clara, on a visiblement la même énergie café + jazz. Tu connais un bon spot dans le quartier ?”</div>
-      `;
-    }
-
-    function bindNavigation() {
-      document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const target = btn.dataset.view;
-          document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el === btn));
-          document.querySelectorAll('.view').forEach(view => view.classList.toggle('active', view.id === target));
-          state.activeView = target;
-        });
-      });
-    }
-
-    function bindAuthTabs() {
-      document.querySelectorAll('[data-tab]').forEach(tab => {
-        tab.addEventListener('click', () => {
-          const mode = tab.dataset.tab;
-          const showLogin = mode === 'login';
-          document.getElementById('loginPanel').style.display = showLogin ? 'block' : 'none';
-          document.getElementById('signupPanel').style.display = showLogin ? 'none' : 'block';
-          document.querySelectorAll('[data-tab]').forEach(btn => btn.classList.toggle('active', btn === tab));
-        });
-      });
-    }
-
-    function doLogin() {
-      const email = document.getElementById('loginEmail').value.trim();
-      const pass = document.getElementById('loginPass').value.trim();
-      const error = document.getElementById('loginError');
-      if (!email || !pass) {
-        error.textContent = 'Email et mot de passe requis.';
-        return;
-      }
-      error.textContent = '';
-      closeAuthScreen();
-      document.getElementById('appShell').classList.add('show');
-      showToast('Connexion réussie');
-    }
-
-    function doSignup() {
-      const name = document.getElementById('signupName').value.trim();
-      const age = Number(document.getElementById('signupAge').value);
-      const email = document.getElementById('signupEmail').value.trim();
-      const pass = document.getElementById('signupPass').value.trim();
-      const error = document.getElementById('signupError');
-      if (!name || !email || !pass || !age || age < 18) {
-        error.textContent = 'Merci de renseigner un compte valide (18+).';
-        return;
-      }
-      error.textContent = '';
-      closeAuthScreen();
-      document.getElementById('appShell').classList.add('show');
-      showToast('Compte créé ! Bienvenue');
-    }
-
-    function boot() {
-      initBackground();
-      bindNavigation();
-      bindAuthTabs();
-      renderCategories();
-      renderGrid();
-      renderLikes();
-      renderConversations();
-      renderPlans();
-      renderCoach();
-      renderSettings();
-
-      const appShell = document.getElementById('appShell');
-      if (state.ageOK) {
-        document.getElementById('ageGate').classList.remove('show');
-        appShell.classList.add('show');
-      } else {
-        appShell.classList.remove('show');
-      }
-    }
-
-    boot();
-  </script>
-</body>
+      resizeCanvas();
+      createParticles();
+      drawBackground();
+    </script>
+  </body>
 </html>
